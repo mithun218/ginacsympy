@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+        <h1></h1>
+
+    <!-- <ol class="lidocu" class="h3class"> -->
+        <!-- <li ><a class="h3class" href="#"><h3></h3></a></li> -->
+        <a class="h4class" href="#isPoly">is_polynomial</a>,&nbsp;
+        <a class="h4class" href="#degree">degree</a>,&nbsp;
+        <a class="h4class" href="#ldegree">ldegree</a>,&nbsp;
+        <a class="h4class" href="#coeff">coeff</a>,&nbsp;
+        <a class="h4class" href="#lcoeff">lcoeff</a>,&nbsp;
+        <a class="h4class" href="#tcoeff">tcoeff</a>,&nbsp;
+        <a class="h4class" href="#quo">quo</a>,&nbsp;
+        <a class="h4class" href="#rem">rem</a>,&nbsp;
+        <a class="h4class" href="#prem">prem</a>,&nbsp;
+        <a class="h4class" href="#divide">divide</a>,&nbsp;
+        <a class="h4class" href="#unit">unit</a>,&nbsp;
+        <a class="h4class" href="#content">content</a>,&nbsp;
+        <a class="h4class" href="#primpart">primpart</a>,&nbsp;
+        <a class="h4class" href="#unitcontprim">unitcontprim</a>,&nbsp;
+        <a class="h4class" href="#gcd">gcd</a>,&nbsp;
+        <a class="h4class" href="#lcm">lcm</a>,&nbsp;
+        <a class="h4class" href="#resultant">resultant</a>,&nbsp;
+        <a class="h4class" href="#factor">factor</a>,&nbsp;
+
+        <!-- <li ><a class="h3class" href="#"><h3></h3></a></li>
+        <a class="h4class" href="#"></a>,&nbsp;
+        <a class="h4class" href="#"></a>,&nbsp;
+    </ol> -->
+
+
+
+    <!-- <ol class="lidocu" class="h3class">
+        <li><h3 class="h3class" id="">:</h3></a></li>
+        <p> </p> -->
+
+        <h4 class="h4class" id="isPoly">is_polynomial(Ex var):</h4>
+        Testing whether an expression is a polynomial in one or more variables can be done with this
+        method.
+<pre class="codebg">
+ &gt;&gt;&gt; (x*y+x*x+sin(y)**2).is_polynomial(x)
+ True
+ &gt;&gt;&gt; (x*y+x*x+sin(y)**2).is_polynomial(lst([x,y]))
+ False
+</pre>
+
+        <h4 class="h4class" id="degree">degree(Ex var):</h4>
+        <p>The degree of a polynomial with respect to variable <code>var</code> can be obtained using this method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (x*y+x*x+y**2).degree(y)
+ 2
+</pre>
+        <h4 class="h4class" id="ldegree">ldegree(Ex var):</h4>
+        <p>The low degree of a polynomial with respect to variable <code>var</code> can be obtained using the this method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (x*y+x*x*y**3+y**2).ldegree(y)
+ 1
+</pre>
+
+        <h4 class="h4class" id="coeff">coeff(Ex var, int n):</h4>
+        <p>To extract a coefficient of the variable <code>var</code> with a certain power <code>n</code> from an expanded polynomial you can use this method.
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt; (x*y+x*x*y**3+y**2).coeff(y)
+ x
+</pre>
+
+        <h4 class="h4class" id="lcoeff">lcoeff(Ex var):</h4>
+        <p>You can also obtain the leading coefficient of the variable <code>var</code>from an expanded polynomial you can use this method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (x*y+x*x*y**3+y**2).lcoeff(y)
+ x**2
+</pre>
+        <h4 class="h4class" id="tcoeff">tcoeff(Ex var):</h4>
+        <p>You can also obtain the trailing coefficient of the variable <code>var</code>from an expanded polynomial you can use this method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (x*y+x*x*y**3+y**2).tcoeff(y)
+ x
+</pre>
+
+        <h4 class="h4class" id="quo">Ex quo(Ex a, Ex b, Ex x):</h4>
+        <p>It computes quotient of the polynomial <code>a</code> in the variable <code>x</code>. The results
+            satisfy a = b*quo(a, b, x) + rem(a, b, x).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; quo(a*x**2+2*a*x*y+a*y**2+b,x+y,x)
+ a*x+a*y
+</pre>
+        <h4 class="h4class" id="rem">Ex rem(Ex a, Ex b, Ex x):</h4>
+        <p>It computes remainder of the polynomial <code>a</code> in the variable <code>x</code>. The results
+            satisfy a = b*quo(a, b, x) + rem(a, b, x).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; rem(a*x**2+2*a*x*y+a*y**2+b,x+y,x)
+ b
+</pre>
+        <h4 class="h4class" id="prem">Ex prem(Ex a, Ex b, Ex x):</h4>
+        <p>This function computes the pseudo-remainder of <code>a</code> and <code>b</code> satisfies c*a = b*q + prem(a, b, x), where c = b.lcoeff(x)(a.degree(x) - b.degree(x) + 1).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; prem(a*x**2+2*a*x*y+a*y**2+b,x+y+a,x)
+ a**3+b
+</pre>
+
+        <h4 class="h4class" id="divide">divide(Ex a, Ex b):</h4>
+        <p>Exact division of multivariate polynomials is performed by this function. If <code>b</code> divides <code>a</code> over the rationals, this function returns <code>True</code> and returns the quotient in a tuple. Otherwise it returns <code>False</code> in which case the value of quotient is undefined.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; divide(x**2+2*x*y+y**2,x+y)
+ (True,x+y)
+ &gt;&gt;&gt;  divide(a*x**2+2*x*y+y**2,x+y)
+ (False,)
+</pre>
+
+        <h4 class="h4class" id="unit">unit(Ex x):</h4>
+        <p>It returns the unit partof a multivariate polynomial with
+            respect to the variable <code>x</code> (the unit part is the sign of the leading coefficient).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (a*y*x**2+2*x*y+y**2).unit(x)
+ 1
+</pre>        
+        <h4 class="h4class" id="content">content(Ex x):</h4>
+        <p>It returns the content part of a multivariate polynomial with respect to the variable  <code>x</code> (the content part is the GCD of the coefficients).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (a*y*x**2+2*x*y+y**2).content(x)
+ y
+</pre>
+
+        <h4 class="h4class" id="primpart">primpart(Ex x, Ex c=None):</h4>
+        <p>It returns the primitive polynomial of a multivariate polynomial with
+            respect to the variable  <code>x</code> (the primitive polynomial being the input polynomial
+            divided by the unit and content parts). The product of unit, content, and primitive part
+            is the original polynomial. The second argument <code>c</code> expects the previously
+            calculated content part of the polynomial, which enables it to work faster in the case where
+            the content part has already been computed.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (a*y*x**2+2*x*y+y**2).primpart(x)
+ y+2*x+x**2*a
+</pre>
+
+        <h4 class="h4class" id="unitcontprim">unitcontprim(Ex x)</h4>
+        <p>It computes the unit u, content c, and primitive part p in one go, returning them in a tuple (u,c,p).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (a*y*x**2+2*x*y+y**2).unitcontprim(x)
+ (1,y,y+2*x+x**2*a)
+</pre>
+
+        <h4 class="h4class" id="gcd">gcd(list l):</h4>
+        <p>This function accept list of expressions as arguments and return a
+                new expression, their greatest common divisor.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; gcd([x**2-1,x-1,x-1,x**3-x**2])
+ -1+x      
+</pre>
+
+        <h4 class="h4class" id="lcm">lcm(list l):</h4>
+        <p>This function accept list of expressions as arguments and return a
+                new expression, their least common multiple.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; lcm([x**2-1,x-1,x-1,x**3-x**2])
+ (-1+x)*x**2*(1+x)      
+</pre>
+
+        <h4 class="h4class" id="resultant">resultant(Ex a, Ex b, Ex s):</h4>
+        <p>The resultant of two polynomials <code>a</code> and <code>b</code>. It is always computed with
+                respect to a specific symbol <code>s</code> within the expressions.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; resultant(x**4+15*x*y+56,x**4*y+12*y+12,x)
+ 20736-304128*y+3748096*y**4+607500*y**7+1672704*y**2-4088832*y**3+607500*y**8      
+</pre>
+
+        <h4 class="h4class" id="factor">factor(Ex a, factor_options opt=factor_options_polynomial):</h4>
+        <p>Polynomial <code>a</code> can also be fully factored with a call to this function. The factorization works for univariate and multivariate polynomials with rational coefficients.</p>
+        <p><code>factor_options:</code> It has two options.</p>
+        <p><code>factor_options_polynomial-></code> This is due to the default option (equals zero), which tells <code>factor</code> to try a factorization only if the expression is a valid polynomial.</p>
+        <p><code>factor_options_all-></code> It tells <code>factor</code> to ignore non-polynomial parts of an expression and also to look inside function arguments.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; factor(expand((a+b+c+d)**20))  
+ (a+b+c+d)**20     
+</pre>
+
+        <!-- <h4 class="h4class" id=""></h4>
+        <p></p>
+        <pre>
+        &gt;&gt;&gt;       
+        </pre>
+
+        <h4 class="h4class" id=""></h4>
+        <h4 class="h4class" id=""></h4>
+        <h4 class="h4class" id=""></h4>
+        <h4 class="h4class" id=""></h4> -->
+        <!-- <li><h3 class="h3class" id="">:</h3></a></li>
+        <p> </p>
+
+        <h4 class="h4class" id=""></h4>
+    </ol> -->
+
+    
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+<script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

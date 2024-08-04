@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+    <h1>Indexed object</h1>
+
+    <p>GinacSympy allows you to handle expressions containing general indexed objects in arbitrary spaces.
+        It is also able to canonicalize and simplify such expressions and perform symbolic dummy index
+        summations. There are a number of predefined indexed objects provided, like delta and metric
+        tensors.
+        There are few restrictions placed on indexed objects and their indices and it is easy to construct
+        nonsense expressions, but our intention is to provide a general framework that allows you to
+        implement algorithms with indexed quantities, getting in the way as little as possible.
+        Indexed expressions in GinacSympy are constructed of two special types of objects, index objects and
+        indexed objects.
+        <li>Index objects are of class idx or a subclass. Every index has a value and a dimension (which
+        is the dimension of the space the index lives in) which can both be arbitrary expressions
+        but are usually a number or a simple symbol. In addition, indices of class varidx have a
+        variance (they can be co- or contravariant), and indices of class spinidx have a variance
+        and can be dotted or undotted.
+        </li>
+        <li>Indexed objects are of class indexed or a subclass. They contain a base expression (which
+            is the expression being indexed), and one or more indices.<br>
+            <span style="font-weight: bold;color: black;"> Please notice:</span> when printing expressions, covariant indices and indices without variance are
+            denoted ‘.i’ while contravariant indices are denoted ‘~i’. Dotted indices have a ‘*’ in front of
+            the index value. In the following, we are going to use that notation in the text so instead of $A^i_{jk}$
+            we will write ‘A~i.j.k’. Index dimensions are not visible in the output.</li>
+        </p>
+    <ol class="lidocu" class="h3class">
+        <li ><a class="h3class" href="#idxObject"><h3>idx object</h3></a></li>
+        <a class="h4class" href="#idx">idx</a>,&nbsp;
+        <a class="h4class" href="#getValue">get_value</a>,&nbsp;
+        <a class="h4class" href="#getDim">get_dim</a>,&nbsp;
+        <a class="h4class" href="#isNumeric">is_numeric</a>,&nbsp;
+        <a class="h4class" href="#isSymbolic">is_symbolic</a>,&nbsp;
+        <a class="h4class" href="#isDimNumeric">is_dim_numeric</a>,&nbsp;
+        <a class="h4class" href="#isDimSymblic">is_dim_symbolic</a>,&nbsp;
+        <a class="h4class" href="#replaceDim">replace_dim</a>,&nbsp;
+        <a class="h4class" href="#minimalDim">minimal_dim</a>,&nbsp;
+
+        <li ><a class="h3class" href="#varidxObject"><h3>varidx object</h3></a></li>
+        <a class="h4class" href="#isConvariant">is_covariant</a>,&nbsp;
+        <a class="h4class" href="#isContravariant">is_contravariant</a>,&nbsp;
+        <a class="h4class" href="#toggleVariance">toggle_variance</a>,&nbsp;
+
+        <li ><a class="h3class" href="#spinidxObject"><h3>spinidx object</h3></a></li>
+        <a class="h4class" href="#isDotted">is_dotted</a>,&nbsp;
+        <a class="h4class" href="#isUndotted">is_undotted</a>,&nbsp;
+        <a class="h4class" href="#toggleDot">toggle_dot</a>,&nbsp;
+        <a class="h4class" href="#toggleVarianceDot">toggle_variance_dot</a>,&nbsp;
+
+        <li ><a class="h3class" href="#symmetries"><h3>Symmetries</h3></a></li>
+        <a class="h4class" href="#symmetry">symmetry</a>,&nbsp;
+        <a class="h4class" href="#sy_none">sy_none</a>,&nbsp;
+        <a class="h4class" href="#sy_sym">sy_symm</a>,&nbsp;
+        <a class="h4class" href="#sy_anti">sy_anti</a>,&nbsp;
+        <a class="h4class" href="#sy_cycli">sy_cycl</a>,&nbsp;
+        <a class="h4class" href="#add">add</a>,&nbsp;
+        <a class="h4class" href="#set_type">set_type</a>,&nbsp;
+        <a class="h4class" href="#get_type">get_type</a>,&nbsp;
+                <!-- <a class="h4class" href="#">validate</a>,&nbsp; -->
+        <a class="h4class" href="#has_symmetry">has_symmetry</a>,&nbsp;
+        <a class="h4class" href="#has_nonsymmetry">has_nonsymmetric</a>,&nbsp;
+        <a class="h4class" href="#has_cyclic">has_cyclic</a>,&nbsp;
+
+        <li ><a class="h3class" href="#indexedObject"><h3>indexed object</h3></a></li>
+        <a class="h4class" href="#allIndexValuesAre">all_index_values_are</a>,&nbsp;
+        <a class="h4class" href="#getIndices">get_indices</a>,&nbsp;
+        <a class="h4class" href="#getDummyIndices">get_dummy_indices</a>,&nbsp;
+        <a class="h4class" href="#getDummyIndices1">get_dummy_indices</a>,&nbsp;
+        <a class="h4class" href="#hasDummyIndexFor">has_dummy_index_for</a>,&nbsp;
+        <a class="h4class" href="#getSymmetry">get_symmetry</a>,&nbsp;
+
+        <li ><a class="h3class" href="#dummyIndices"><h3>Dummy indices</h3></a></li>
+        <a class="h4class" href="#get_free_indices">get_free_indices</a>,&nbsp;
+        <a class="h4class" href="#get_all_dummy_indices_safely">get_all_dummy_indices_safely</a>,&nbsp;
+        <a class="h4class" href="#expand_dummy_sum">expand_dummy_sum</a>,&nbsp;
+
+        <li ><a class="h3class" href="#scalarProduct"><h3>Scalar product:</h3></a></li>
+        <a class="h4class" href="#scalar_product">scalar_product</a>,&nbsp;
+        <a class="h4class" href="#scalarProductAdd">add</a>,&nbsp;
+        <a class="h4class" href="#is_defined">is_defined</a>,&nbsp;
+        <a class="h4class" href="#scalarproductClear">clear</a>,&nbsp;
+        <a class="h4class" href="#scalarProductEvaluate">evaluate</a>,&nbsp;
+
+        <li ><a class="h3class" href="#substitutingIndices"><h3>Substituting indices</h3></a></li>
+        <a class="h4class" href="#substitutingIndicesSubs">subs</a>,&nbsp;
+
+        <li ><a class="h3class" href="#simplifyingIndexedExpressions"><h3>Simplifying indexed expressions</h3></a></li>
+        <a class="h4class" href="#simplify_indexed">simplify_indexed</a>,&nbsp;
+
+        <!-- <li ><a class="h3class" href="#"><h3></h3></a></li>
+        <a class="h4class" href="#"></a>,&nbsp;
+        <a class="h4class" href="#"></a>,&nbsp;
+        <a class="h4class" href="#"></a>,&nbsp;
+        <a class="h4class" href="#"></a>,&nbsp;
+        <a class="h4class" href="#"></a>,&nbsp;
+        <a class="h4class" href="#"></a>,&nbsp;
+        <a class="h4class" href="#"></a>,&nbsp; -->
+    </ol>
+
+    <ol>
+        <li class="h3class"><h3 id="idxObject">idx object :</h3></li>
+        <p>The idx constructor takes two arguments, the index value and the index dimension:</p>
+        <h4 id="idx">idx(str s, dimension):</h4>
+<pre class="codebg">
+ &gt;&gt;&gt; idx_obj=idx("i",4)
+</pre>
+        <h4 class="h4class" id="getValue">get_value():</h4>
+        <p>Get value of index.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; idx_obj.get_value()
+ i
+</pre>
+
+        <h4 class="h4class" id="getDim">get_dim():</h4>
+        <p>Get dimension of index space.</p>
+<pre class="codebg">
+&gt;&gt;&gt; idx_obj.get_dim()
+4
+</pre>
+        <h4 class="h4class" id="isNumeric">is_numeric():</h4>
+        <p>Check whether the index is numeric.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; idx_obj.is_numeric()
+ False
+</pre>
+
+        <h4 class="h4class" id="isSymbolic">is_symbolic():</h4>
+        <p>Check whether the index is symbolic.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; idx_obj.is_symbolic()
+ True
+</pre>
+
+        <h4 class="h4class" id="isDimNumeric">is_dim_numeric():</h4>
+        <p>Check whether the dimension is numeric.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; idx_obj.is_dim_numeric()
+ True
+ &gt;&gt;&gt; j=idx("j",a)
+ &gt;&gt;&gt; j.is_dim_numeric()
+ False
+</pre>
+
+        <h4 class="h4class" id="isDimSymbolic">is_dim_symbolic():</h4>
+        <p>Check whether the dimension is symbolic.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; idx_obj.is_dim_symbolic()
+ False
+</pre>
+
+        <h4 class="h4class" id="replaceDim">replace_dim(new_dim):</h4>
+        <p>Make a new index with the same value but a different dimension.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; idx_obj=idx_obj.replace_dim(3)
+ &gt;&gt;&gt; idx_obj.get_dim()
+ 3
+</pre>
+
+        <h4 class="h4class" id="minimalDim">minimal_dim(idx other):</h4>
+        <p>Return the minimum of the dimensions of this and another index.
+           If this is undecidable, throw an exception.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i=idx(Ex("i"),3)
+ &gt;&gt;&gt; j=idx(Ex("j"),2)
+ &gt;&gt;&gt; i.minimal_dim(j)
+ 2
+</pre>
+
+
+        <li class="h3class"><h3 id="varidxObject">varidx object</h3></li>
+        <p>A <code>varidx</code> is an <code>idx</code> with an additional flag that marks it as co- or contravariant. The default is a contravariant (upper) index, but this can be overridden by supplying a third argument to the varidx constructor.</p>
+        <h4 id="varidx">varidx(str v,dim, bool iscovariant=False)</h4>
+<pre class="codebg">
+ &gt;&gt;&gt; varidx_obj=varidx("i",4)
+</pre>
+
+        <h4 class="h4class" id="isCovariant">is_covariant()</h4>
+        <p>Check whether the index is covariant.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; varidx_obj.is_covariant()
+ False
+ &gt;&gt;&gt; j=varidx("j",4,True)
+ &gt;&gt;&gt; j.is_covariant()
+ True
+</pre>
+
+        <h4 class="h4class" id="isContravariant">is_contravariant():</h4>
+        <p>Check whether the index is contravariant.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; varidx_obj.is_contravariant() 
+ True 
+</pre>
+
+        <h4 class="h4class" id="toggleVariance">toggle_variance():</h4>
+        <p>Make a new index with the same value but the opposite variance.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; varidx_obj=varidx_obj.toggle_variance()
+ &gt;&gt;&gt; varidx_obj.is_covariant()
+ True
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+
+                <li class="h3class"><h3 id="spinidxObject">spinidx object</h3></li>
+                <p>The spinidx class provides dotted and undotted variant indices, as used in the Weyl-van-der-
+                        Waerden spinor formalism. A spinidx is a varidx with an additional flag that marks it as dotted or undotted. The default is
+                        undotted but this can be overridden by supplying a fourth argument to the spinidx constructor.</p>
+
+        <h4 class="h4class" id="spinidx">spinidx(str v,dim,bool iscovariant=False,bool isdotted=False):</h4>
+<pre class="codebg">
+ &gt;&gt;&gt; i=spinidx("i",4)
+</pre>
+
+        <h4 class="h4class" id="isDotted">is_dotted():</h4>
+        <p>Check whether the index is dotted.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i=spinidx("i",4)
+ &gt;&gt;&gt; i.is_dotted()
+ False
+ &gt;&gt;&gt; i=spinidx(Ex("i"),i,False,True)
+ &gt;&gt;&gt; i.is_dotted()
+ True
+</pre>
+
+        <h4 class="h4class" id="isUndotted">is_undotted():</h4>
+        <p>Check whether the index is not dotted.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i=spinidx("i",4)
+ &gt;&gt;&gt; i.is_undotted()
+ True
+ &gt;&gt;&gt; i=spinidx(Ex("i"),i,False,False)
+ &gt;&gt;&gt; i.is_undotted()
+ False
+</pre>
+
+        <h4 class="h4class" id="toggleDot">toggle_dot():</h4>
+        <p>Make a new index with the same value and variance but the opposite dottedness.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i=spinidx("i",4)
+ &gt;&gt;&gt; i.is_undotted()
+ True
+ &gt;&gt;&gt; i=i.toggle_dot()
+ &gt;&gt;&gt; i.is_undotted()
+ False
+</pre>
+
+        <h4 class="h4class" id="toggleVarianceDot">toggle_variance_dot():</h4>
+        <p>Make a new index with the same value but opposite variance and dottedness.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i=spinidx(Ex("i"),i,False,True)
+ &gt;&gt;&gt; i=i.toggle_variance_dot()
+ &gt;&gt;&gt; i.is_dotted()
+ False
+ &gt;&gt;&gt; i.is_covariant()
+ True
+</pre>
+
+
+              <li class="h3class"><h3 id="symmetries">Symmetries</h3></li>
+                <p>Indexed objects can have certain symmetry properties with respect to their indices. Symmetries are specified as a tree of objects of class <code>symmetry</code> that is constructed with the helper functions<br>
+                        <code>symmetry sy_none(...);</code><br>
+                        <code>symmetry sy_symm(...);</code><br>
+                        <code>symmetry sy_anti(...);</code><br>
+                        <code>symmetry sy_cycl(...);</code><br>
+
+                sy_none() stands for no symmetry, sy_symm() and sy_anti() specify fully symmetric or antisymmetric,
+                respectively, and sy_cycl() represents a cyclic symmetry. Each of these functions
+                accepts up to four arguments which are symmetry objects which is constructed from unsigned
+                integer numbers that represent an index position (counting from 0). A symmetry specification
+                that consists of only a single sy_symm(), sy_anti() or sy_cycl() with no arguments specifies the respective symmetry for all indices. </p>
+
+        <h4 class="h4class" id="symmetry">symmetry(int i):</h4>
+        <p>This class describes the symmetry of a group of indices.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; symmetry(1)
+</pre>
+
+        <h4 class="h4class" id="sy_none">symmetry sy_none(...):</h4>
+        <p>This function constructs <cod>symmetry</cod> object that has no symmetry.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_ij = indexed(Ex("A"),[i,j],sy_none(symmetry(0),symmetry(1)))
+ &gt;&gt;&gt; A_ij.subs({i:0,j:1})-A_ij.subs({i:1,j:0})
+ A.0.1-A.1.0
+</pre>
+
+        <h4 class="h4class" id="sy_symm">symmetry sy_symm(...):</h4>
+        <p>This function constructs <cod>symmetry</cod> object that has symmetry.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_ij = indexed(Ex("A"),[i,j],sy_summsymmetry(0),symmetry(1)))
+ &gt;&gt;&gt; A_ij.subs({i:0,j:1})-A_ij.subs({i:1,j:0})
+ 0
+</pre>
+
+        <h4 class="h4class" id="sy_anti">symmetry sy_anti(...):</h4>
+        <p>This function constructs <cod>symmetry</cod> object that has antisymmetry.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_ij = indexed(Ex("A"),[i,j],sy_anti(symmetry(0),symmetry(1)))
+ &gt;&gt;&gt; A_ij.subs({i:0,j:1})-A_ij.subs({i:1,j:0})
+ -2*A.1.0
+</pre>
+
+        <h4 class="h4class" id="sy_cycl">symmetry sy_cycl(...):</h4>
+        <p>This function constructs <cod>symmetry</cod> object that has cyclic symmetry.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_ijk = indexed(Ex("A"),[i,j,k],sy_cycl(symmetry(0),symmetry(1),symmetry(2)))
+ &gt;&gt;&gt; A_ijk.subs({i:0,j:1,k:2})-A_ijk.subs({i:2,j:0,k:1})
+ 0
+</pre>
+
+        <h4 class="h4class" id="add">add(symmetry s):</h4>
+        <p>If you need to specify more than four indices, you have to use the <code>.add()</code> method of the symmetry class. For example, to specify full symmetry in the first six indices you would write .</p>
+<pre class="codebg">
+ &gt;&gt;&gt; sy_symm(symmetry(0),symmetry(1), symmetry(2), symmetry(3)).add(symmetry(4)).add(symmetry(5))
+</pre>
+
+
+        <h4 class="h4class" id="set_type">set_type(symmetry_type st):</h4>
+        <p>Set symmetry type. </p>
+        <p><code>symmetry_type:</code>It has four options.<br>
+        <code>symmetry_type_none-></code>No symmetry properties.</p>
+        <code>symmetry_type_symmetric-></code>Totally symmetric.</p>
+        <code>symmetry_type_antisymmetric-></code>Totally antisymmetric.</p>
+        <code>symmetry_type_cyclic-></code>Cyclic symmetry.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; s=symmetry(0)
+ &gt;&gt;&gt; symmetry(0).set_type(symmetry_type_symmetric)
+</pre>
+
+        <h4 class="h4class" id="get_type">get_type():</h4>
+        <p>Get symmetry type.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; s=symmetry(0)
+ &gt;&gt;&gt; symmetry(0).set_type(symmetry_type_symmetric)
+ &gt;&gt;&gt; s.get_type()==symmetry_type_symmetric
+ True 
+</pre>
+
+        <h4 class="h4class" id="has_symmetry">has_symmetry():</h4>
+        <p>Check whether this node actually represents any kind of symmetry.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; s.has_symmetry()
+ True
+</pre>
+
+        <h4 class="h4class" id="has_nonsymmetric">has_nonsymmetric():</h4>
+        <p>Check whether this node involves anything non symmetric.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; s.has_nonsymmetric()
+ False
+</pre>
+
+
+        <h4 class="h4class" id="has_cyclic">has_cyclic():</h4>
+        <p>Check whether this node involves a cyclic symmetry.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; s=symmetry(0)
+ &gt;&gt;&gt; s.set_type(symmetry_type_cyclic)
+ &gt;&gt;&gt; s.has_cyclic()
+ True
+</pre>
+
+               <li class="h3class"><h3 id="indexedObject">indexed object</h3></li>
+                <p>This class holds an indexed expression. It consists of a 'base' expression
+                 (the expression being indexed) which can be accessed as op(0), and n (n >= 0)
+                 indices (all of class idx), accessible as op(1)..op(n).</p>
+
+        <h4 class="h4class" id="indexed">indexed(Ex e,list VaridxOrIdx,symmetry Sinp=None):</h4>
+<pre class="codebg">
+ &gt;&gt;&gt; ic,jc=varidx("i",4),varidx("j",4)
+ &gt;&gt;&gt; A = Ex("A")
+ &gt;&gt;&gt; A_icjc=indexed(A,[ic,jc])
+ &gt;&gt;&gt; A
+ A~i~j
+</pre>
+
+        <h4 class="h4class" id="allIndexValuesAre">all_index_values_are(info_flags inf):</h4>
+        <p>Check whether all index values have a certain property.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_icjc.all_index_values_are(info_flags_symbol)
+ True
+ &gt;&gt;&gt; A_icjc.subs({ic:2,jc:3}).to_indexed().all_index_values_are(info_flags_integer)
+ False
+</pre>
+
+        <h4 class="h4class" id="getIndices">get_indices():</h4>
+        <p>Return a list containing the object's indices.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_icjc.get_indices()
+ [~i, ~j] 
+</pre>
+
+        <h4 class="h4class" id="getDummyIndices">get_dummy_indices():</h4>
+        <p>Return a list containing the dummy indices of the object, if any.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_icjc.get_dummy_indices()
+ []
+ &gt;&gt;&gt; kc,k=varidx("k",4),varidx("k",4,True)
+ &gt;&gt;&gt; B_kck = indexed(Ex("B"),[kc,k])
+ &gt;&gt;&gt; B_kck.get_dummy_indices()
+ [.k]
+</pre>
+
+        <h4 class="h4class" id="getDummyIndices1">get_dummy_indices(indexed other)</h4>
+        <p>Return a list containing the dummy indices in the contraction with
+        another indexed object. This is symmetric: <code>a.get_dummy_indices(b) == b.get_dummy_indices(a)</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i,ic = varidx("i",True),varidx("ic")
+ &gt;&gt;&gt; A_ii = indexed(Ex("A"),[i,i])
+ &gt;&gt;&gt; A_icic = indexed(Ex("A"),[ic,ic])
+ &gt;&gt;&gt; A_ii.get_dummy_indices(A_icic)
+ [.i]
+</pre>
+
+        <h4 class="h4class" id="hasDummyIndexFor">has_dummy_index_for(Ex i):</h4>
+        <p>Check whether the object has an index that forms a dummy index pair
+        with a given index.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_ii.has_dummy_indices_for(i)
+ True 
+</pre>
+
+        <h4 class="h4class" id="getSymmetry">get_symmetry():</h4>
+        <p>Return symmetry properties.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_ij = indexed(Ex("A"),[i,j])
+ &gt;&gt;&gt; A_ij.get_symmetry()==symmetry_type_none
+ True 
+ &gt;&gt;&gt; A_ij = indexed(Ex("A"),[i,j],sy_symm(symmetry(0),symmetry(1)))
+ &gt;&gt;&gt; A_ij.get_symmetry()==symmetry_type_none
+ False
+ &gt;&gt;&gt; A_ij.get_symmetry()==symmetry_type_symmetric
+ True
+</pre>
+
+
+               <li class="h3class"><h3 id="spinidx">Dummy indices</h3></li>
+                <p>GinacSympy treats certain symbolic index pairs as dummy indices meaning that a summation over the index range is implied. Symbolic indices which are not dummy indices are called free indices.
+                Numeric indices are neither dummy nor free indices.
+                To be recognized as a dummy index pair, the two indices must be of the same class and their
+                value must be the same single symbol (an index like ‘2*n+1’ is never a dummy index). If the
+                indices are of class varidx they must also be of opposite variance; if they are of class spinidx they must be both dotted or both undotted.</p>
+
+        <h4 class="h4class" id="get_free_indices">get_free_indices():</h4>
+        <p>This method of <code>Ex</code> object returns a list containing the free indices of an expression.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i,ic,j,jc = varidx("i",True),varidx("ic"),varidx("j",True),varidx("jc")
+ &gt;&gt;&gt; A_ii=indexed(Ex("A"),[i,i])
+ &gt;&gt;&gt; A_jcjc=indexed(Ex("A"),[jc,jc])
+ &gt;&gt;&gt; (A_ii*A_jcjc).get_free_indices()
+ [~j, .i]
+</pre>
+
+        <h4 class="h4class" id="get_all_dummy_indices_safely">get_all_dummy_indices_safely():</h4>
+        <p>This method of <code>Ex</code> object returns all dummy indices from the expression.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; A_ii=indexed(Ex("A"),[i,i])
+ &gt;&gt;&gt; A_icic=indexed(Ex("A"),[ic,ic])
+ &gt;&gt;&gt; (A_ii*A_icic).get_all_dummy_indices_safely()
+ [.i]
+</pre>
+
+        <h4 class="h4class" id="expand_dummy_sum">expand_dummy_sum(Ex e, bool subs_idx = false):</h4>
+        <p>takes an expression e and returns the expanded sum for all dummy indices with numeric dimensions. If the parameter subs_idx is set to true then all substitutions are made by idx
+        class indices, i.e. without variance.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; expand_dummy_sum(A_ii*A_icic)
+ A.1.1*A~1~1+A.2.2*A~2~2+A.3.3*A~3~3+A.0.0*A~0~0
+ &gt;&gt;&gt; expand_dummy_sum(A_ii*A_icic,True)
+ (A.3.3)**2+(A.0.0)**2+(A.1.1)**2+(A.2.2)**2
+</pre>
+
+        <!-- <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre> -->
+
+
+
+             <li class="h3class"><h3 id="scalarProduct">Scalar product</h3></li>
+        <h4 class="h4class" id="scalar_product">scalar_product():</h4>
+        <p>The class for storing information about known scalar products which
+           are to be automatically replaced by simplify_indexed().</p>
+<pre class="codebg">
+ &gt;&gt;&gt; sp = scalar_product() 
+</pre>
+
+        <h4 class="h4class" id="scalarProductAdd">add(Ex e1, Ex e2, sp_value):</h4>
+        <p>Register scalar product between <code>e1</code> and <code>e2</code>, and its value <code>sp_value</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i,j=varidx("i",3),varidx("j",3)
+ &gt;&gt;&gt; A_i=indexed(Ex("A"),[i])
+ &gt;&gt;&gt; B_j=indexed(Ex("B"),[j])
+ &gt;&gt;&gt; sp = scalar_product()
+ &gt;&gt;&gt; sp.add(A_i,B_j,0)
+ &gt;&gt;&gt; (A_i*B_j).simplify_indexed(sp)
+ 0
+</pre>
+
+        <h4 class="h4class" id="is_defined">is_defined(Ex e1,Ex e2,dim):</h4>
+        <p>Check whether scalar product pair <code>e1</code> and <code>e2</code> is defined in dimension <code>dim</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; sp.add(A_i,B_j,0)
+ &gt;&gt;&gt; sp.is_defined(A_i,B_j,3)
+ True
+</pre>
+
+        <h4 class="h4class" id="scalarProductClear">clear():</h4>
+        <p>Clear all registered scalar products.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; sp.clear()
+ &gt;&gt;&gt; sp.is_defined(A_i,B_j,3)
+ False
+</pre>
+
+        <h4 class="h4class" id="scalarProductEvaluate">evaluate(Ex e1,Ex e2,dim):</h4>
+        <p>Return value of defined scalar product pair <code>e1</code> and <code>e2</code> in dimension <code>dim</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; sp.add(A_i,B_j,0)
+ &gt;&gt;&gt; sp.evaluate(A_i,B_j,3)
+ 0
+</pre>
+
+ 
+        <li class="h3class"><h3 id="substitutingIndices">Substituting indices</h3></li>
+        <p>Sometimes you will want to substitute one symbolic index with another symbolic or numeric
+        index, for example when calculating one specific element of a tensor expression. This is done
+        with the .subs() method, as it is done for symbols.</p>
+
+        <h4 class="h4class" id="substitutingIndicesSubs">subs(dict e, subs_options opt=subs_nooptions):</h4>
+<pre class="codebg">
+ &gt;&gt;&gt; i = idx("i",4)
+ &gt;&gt;&gt; j = Ex("j")
+ &gt;&gt;&gt; A = Ex("A")
+ &gt;&gt;&gt; A_i = indexed(A,[i])
+ &gt;&gt;&gt; A_j = A_i.subs({i:j}) #Only the value of the index will get substituted. Its other
+                                    #properties, including its dimension, remain unchanged.
+ &gt;&gt;&gt; A_j[1].to_idx().get_value()
+ j
+ &gt;&gt;&gt; A_j[1].to_idx().get_dim()
+ 4
+ &gt;&gt;&gt; B = Ex("B")
+ &gt;&gt;&gt; B_j = A_j.subs({A:B}) #Substituting the base expression of an indexed object works as expected.
+ &gt;&gt;&gt; B_j[0]
+ B
+</pre>
+
+        
+
+              <li class="h3class"><h3 id="simplifyingIndexedExpressions">Simplifying indexed expressions</h3></li>
+                <p>In addition to the few automatic simplifications that GinacSympy performs on indexed expressions
+                (such as re-ordering the indices of symmetric tensors and calculating traces and convolutions of matrices and predefined tensors) there is some methods that perform some more expensive operations.</p>
+
+        <h4 class="h4class" id="simplify_indexed">simplify_indexed():</h4>
+        <ul class="lidocu">
+                <li>It checks the consistency of free indices in sums in the same way <code>get_free_indices()</code> does.</li>
+                <li>It tries to give dummy indices that appear in different terms of a sum the same name to
+                        allow simplifications like $a_i b_i-a_j b_j=0$.</li>
+                <li>It (symbolically) calculates all possible dummy index summations/contractions with the
+                        predefined tensors (this will be explained in more detail in the next section)</li>
+                <li>It detects contractions that vanish for symmetry reasons, for example the contraction of a
+                        symmetric and a totally antisymmetric tensor.</li>
+        </ul>
+<pre class="codebg">
+ &gt;&gt;&gt; i=varidx(("i"),4,True)
+ &gt;&gt;&gt; ic=varidx(("i"),4)
+ &gt;&gt;&gt; j=varidx(("j"),4,True)
+ &gt;&gt;&gt; jc=varidx(("j"),4)
+ &gt;&gt;&gt; A_ii=indexed(Ex("A"),[i,i])
+ &gt;&gt;&gt; A_icic=indexed(Ex("A"),[ic,ic])
+ &gt;&gt;&gt; A_jj=indexed(Ex("A"),[j,j])
+ &gt;&gt;&gt; A_jcjc=indexed(Ex("A"),[jc,jc])
+ &gt;&gt;&gt; (A_ii*A_icic-A_jj*A_jcjc).simplify_indexed()
+ 0
+</pre>
+
+        <h4 class="h4class">simplify_indexed(scalar_products sp):</h4>
+        <p>As a special case of dummy index summation, it can replace scalar products of two tensors
+                with a user-defined value.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; k=idx(("k"),3)
+ &gt;&gt;&gt; A_k=indexed(Ex("A"),[k])
+ &gt;&gt;&gt; B_k=indexed(Ex("B"),[k])
+ &gt;&gt;&gt; C_k=indexed(Ex("C"),[k])
+ &gt;&gt;&gt; sp=scalar_products()
+ &gt;&gt;&gt; sp.add(A_k,C_k,0)
+ &gt;&gt;&gt; sp.add(B_k,C_k,0)
+ &gt;&gt;&gt; sp.add(C_k,C_k,9)
+ &gt;&gt;&gt; (C_k*(B_k+C_k+A_k)).expand().simplify_indexed(sp)
+ 9
+</pre>
+
+        <!-- <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre> -->
+
+
+
+              <!-- <li class="h3class"><h3 id="spinidx">spinidx object</h3></li>
+                <p></p>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+ &gt;&gt;&gt; 
+</pre> -->
+
+
+    </ol>
+
+
+
+    
+    <div class="parentflextoc">
+        <div id="tensor_algebra" class="childflexginacsympytoc">
+            <p><a style="color: green;" href="tensor_algebra.html">Tensor Algebra</a></p>
+        </div>
+        <div id="non-commutative" class="childflexginacsympytoc">
+            <p><a style="color: gold;" href="non-commutative.html">Non-commutative objects (Clifford Algebra and Color Algebra)</a></p>
+        </div>
+    </div>
+
+
+    
+    <br>
+    <br>
+    <hr>
+    <br>
+    <div class="pagefooter">
+        <p>
+            Copyright &copy; Mithun Bairagi 2024-present
+            <br>
+            Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+            <br>
+            <br>
+        </p>
+    </div>
+    <script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

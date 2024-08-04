@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+                        <h1>Expression Manipulation</h1>
+
+    <ol class="lidocu" class="h3class">
+        <li ><a class="h3class" href="#accesssing"><h3>Accessing subexpressions</h3></a></li>
+        <a class="h4class" href="#constIterator">const_iterator</a>,&nbsp;
+        <a class="h4class" href="#constPreorder">const_preorder_iterator</a>,&nbsp;
+        <a class="h4class" href="#constPreorder">const_postorder_iterator</a>,&nbsp;
+        <a href="#nops">nops,</a>&nbsp;
+        <a href="#op">op,</a>&nbsp;
+        <a href="#lhs">lhs,</a>&nbsp;
+        <a href="#rhs">rhs,</a>&nbsp;
+        <a href="#coeff">coeff,</a>&nbsp;
+        <a href="#degree">degree,</a>&nbsp;
+        <a href="#numer">numer,</a>&nbsp;
+        <a href="#denom">denom,</a>&nbsp;
+
+        <li ><a class="h3class" href="#substituting"><h3>Substituting expressions</h3></a></li>
+        <a href="#subs">subs,</a>
+
+        <li ><a class="h3class" href="#pattern"><h3>Pattern matching and advanced substitutions</h3></a></li>
+        <a href="#wild">wild,</a>&nbsp;
+        <a href="#match">match,</a>&nbsp;
+        <a href="#has">has,</a>&nbsp;
+        <a href="#find">find,</a>&nbsp;
+
+        <li ><a class="h3class" href="#map"><h3>Applying a function on subexpressions</h3></a></li>
+        <a href="#map1">map(map_function f),</a>&nbsp;
+        <a href="#map2">map(Ex pattern),</a>&nbsp;
+
+        <li ><a class="h3class" href="#simplification"><h3>Simplification</h3></a></li>
+        <a href="#normal">normal,</a>&nbsp;
+        <a href="#Simplify">Simplify,</a>&nbsp;
+        <a href="#simplify">simplify,</a>&nbsp;
+        <a href="#fullsimplify">fullsimplify,</a>&nbsp;
+
+        <li><a class="h3class" href="#formulaRearrangement"><h3>Formula rearrangement</h3></a></li>
+        <a href="#expand">expand,</a>&nbsp;
+        <a href="#powerExpand">power_expand,</a>&nbsp;
+        <a href="#collect">collect,</a>&nbsp;
+        <a href="#collectAll">collect_all,</a>&nbsp;
+        <a href="#collectCommon">collect_common_factor,</a>&nbsp;
+        <a href="#apart">apart,</a>&nbsp;
+        <a href="#toPolynomial">to_polynomial,</a>&nbsp;
+        <a href="#to_rational">to_rational,</a>&nbsp;
+        <!-- <a href=""></a>&nbsp;
+        <a href=""></a>&nbsp;
+        <a href=""></a>&nbsp; -->
+
+        <!-- <li><a href=""></a></li>
+        <a href=""></a>&nbsp; -->
+    </ol>
+
+
+    <ol class="lidocu" class="h3class">
+        <li><h3 class="h3class" id="accessing">Accessing subexpressions:</h3></a></li>
+        Many GinacSympy classes, like add, mul, lst, and function, act as containers for subexpressions.
+        For example, the subexpressions of a sum (an add object) are the individual terms, and the
+        subexpressions of a function are the function’s arguments.
+        GinacSympy provides several ways of accessing subexpressions. 
+        <h4 class="h4class" id="constIterator">const_iterator:</h4>
+        <code>const_iterator</code> can access an expression’s immediate children:
+<pre class="codebg">
+ &gt;&gt;&gt; expr=x**3+sin(5*x+y)
+ &gt;&gt;&gt; expr.set_iter(const_iterator)
+ &gt;&gt;&gt; for i in expr:
+        print(i)
+ sin(5*x+y)
+ x**3
+</pre>
+
+        <h4 class="h4class" id="constPreorder">const_preorder_iterator, const_postorder_iterator:</h4>
+        GinacSympy provides two additional iterator classes, <code>const_preorder_iterator</code> and <code>const_postorder_iterator</code>, that iterate over all objects in an expression tree, in preorder or postorder, respectively:
+<pre class="codebg">
+ &gt;&gt;&gt; expr.set_iter(const_preorder_iterator)
+ &gt;&gt;&gt; for i in expr:
+        print(i)
+ sin(5*x+y)+x**3
+ sin(5*x+y)
+ 5*x+y
+ 5*x
+ x
+ 5
+ y
+ x**3
+ x
+ 3
+ &gt;&gt;&gt; expr.set_iter(const_postorder_iterator)
+ &gt;&gt;&gt; for i in expr:
+        print(i)
+ x
+ 5
+ 5*x
+ y
+ 5*x+y
+ sin(5*x+y)
+ x
+ 3
+ x**3
+ sin(5*x+y)+x**3
+</pre>
+        GinacSympy also provide a number of following member functions of <code><b>Ex</b></code> object for accessing subexpressions:
+
+        <br>
+        <h4 class="h4class" id="nops">nops():</h4>
+        It determines the number of subexpressions (operands) contained in the expression,
+<pre class="codebg">
+ &gt;&gt;&gt; expr.nops()
+ 2
+</pre>
+        <h4 class="h4class" id="op">op(i):</h4>
+        <code>op(i)</code> returns the i-th (0..nops()-1) subexpression. In the case of a power object, <code>op(0)</code> will return the basis and <code>op(1)</code> the exponent. For indexed objects, <code>op(0)</code> is the base expression and <code>op(i)</code>, i > 0 are the indices.
+<pre class="codebg">
+ &gt;&gt;&gt; expr.op(1)
+ sin(5*x+y)
+ &gt;&gt;&gt; expr.op(1).op(0)
+ 5*x+y
+</pre>
+
+      <h4 id="lhs">lhs():</h4>
+      The left-hand side expressions of objects of class relational (and
+only of these) can also be accessed with this method.
+<pre class="codebg">
+ &gt;&gt;&gt; relational(x,2).lhs()
+ x
+</pre>
+
+      <h4 id="rhs">rhs():</h4>
+      The right-hand side expressions of objects of class relational (and
+      only of these) can also be accessed with this method.
+<pre class="codebg">
+ &gt;&gt;&gt; relational(x,2).rhs()
+ 2
+</pre> 
+
+    <h4 id="coeff">coeff(Ex s, int n=1):</h4>
+    It extract a coefficient of variable s with n-th power from an expanded polynomial.
+<pre class="codebg">
+ &gt;&gt;&gt; ((a+b)*x**2+5*x).coeff(x,2)
+ a+b
+</pre> 
+
+    <h4 id="degree">degree(Ex s):</h4>
+It extract degree of variable s from an expanded polynomial.
+<pre class="codebg">
+ &gt;&gt;&gt; ((a+b)*x**2+5*x).degree(x)
+ 2
+</pre> 
+
+    <h4 id="numer">numer():</h4>
+    Numerator of an expression can be obtained with it.
+<pre class="codebg">
+ &gt;&gt;&gt; (sin(x)*x**(-1)+cos(x)**(-2)).numer()
+ x+cos(x)**2*sin(x)
+</pre> 
+
+    <h4 id="denom">denom():</h4>
+    Denominator of an expression can be obtained with it.
+<pre class="codebg">
+ &gt;&gt;&gt; (sin(x)*x**(-1)+cos(x)**(-2)).denom()
+ x*cos(x)**2
+</pre> 
+
+    <li><h3 class="h3class" id="substituting">Substituting expressions:</h3></a></li>
+    <h4 id="subs">
+      subs(dict e, subs_options opt=subs_nooptions):
+     </h4>
+    <p>Algebraic objects inside expressions can be replaced with arbitrary
+        expressions via the <code>.subs()</code> method.
+    </p>
+    <p><code>subs()</code> takes dict which is a pair associative container that maps
+        expressions to expressions. </p>
+<pre class="codebg">
+ &gt;&gt;&gt; e1 = x**5*y**2*z
+ &gt;&gt;&gt; (e1).subs({x:c})
+ c**5*y**2*z
+</pre>
+<p><code>subs()</code> performs syntactic substitution of any complete algebraic
+    object; it does not try to match sub-expressions as is demonstrated by the
+    following example:
+    </p>
+<pre class="codebg">
+ &gt;&gt;&gt; e1 = pow(x+y, 2)
+ &gt;&gt;&gt; e1.subs({x+y:4})
+ 16
+ &gt;&gt;&gt; e2 = sin(x)*sin(y)*cos(x)
+ &gt;&gt;&gt; e2.subs({sin(x):cos(x)})
+ cos(x)**2*sin(y)
+ &gt;&gt;&gt; e3 = x+y+z
+ &gt;&gt;&gt; e3.subs({x+y,4})
+ x+y+z #(and not 4+z as one might expect)
+</pre>
+  <p>A more powerful form of substitution using wildcards is described in the
+    next section.
+  </p>
+
+    <p style="font-weight: bold;">subs_options:</p> <p>The optional last argument to <code>subs()</code> is a combination of
+    <code>subs_options</code> flags. There are three options available:
+    <code>subs_options_no_pattern</code> disables pattern matching, which makes
+    large <code>subs()</code> operations significantly faster if you are not using
+    patterns. The second option, <code>subs_options_algebraic</code> enables
+    algebraic substitutions in products and powers:</p>
+<pre class="codebg">
+&gt;&gt;&gt; (x**5*y**2*z).subs({x**2*y**2:c}, subs_options_algebraic)
+x**3*z*c
+</pre>  
+  <p> 
+    The third option, <code>subs_options_no_index_renaming</code> disables the feature that dummy
+    indices are renamed if the substitution could give a result in which a
+    dummy index occurs more than two times. This is sometimes necessary if
+    you want to use <code>subs()</code> to rename your dummy indices.
+  </p>
+  <p>By default <code>subs_options</code> is <code>subs_nooptions</code> which does not apply any options.</p>
+
+    
+    <li><h3 class="h3class" id="pattern">Pattern matching and advanced substitutions:</h3></a></li>
+    <p>GinacSympy allows the use of patterns for checking whether an expression is of a
+        certain form or contains subexpressions of a certain form, and for
+        substituting expressions in a more general way.
+        </p>
+        <h4 id="wild">
+          wild(label = 0):
+        </h4>
+        <p>A <em>pattern</em> is an algebraic expression that optionally contains wildcards.
+        A <em>wildcard</em> is a special kind of object (of class <code>wildcard</code>) that
+        represents an arbitrary expression. Every wildcard has a <em>label</em> which is
+        an unsigned integer number to allow having multiple different wildcards in a
+        pattern. Wildcards are printed as ‘<samp>$label</samp>’. wildcard objects are created
+        with the call
+        </p>
+<pre>
+ wild(label = 0)
+</pre>
+        <p>which is simply a wrapper for the <code>wildcard()</code> constructor with a shorter
+        name. Some examples for patterns:
+        </p>
+    <table>
+    <tbody><tr><td width="50%"><strong>Constructed as</strong></td><td width="50%"><strong>Output as</strong></td></tr>
+    <tr><td width="50%"><code>wild()</code></td><td width="50%">‘<samp>$0</samp>’</td></tr>
+    <tr><td width="50%"><code>pow(x,wild())</code></td><td width="50%">‘<samp>x**$0</samp>’</td></tr>
+    <tr><td width="50%"><code>atan2(wild(1),wild(2))</code></td><td width="50%">‘<samp>atan2($1,$2)</samp>’</td></tr>
+    <tr><td width="50%"><code>indexed(A,idx(wild(),3))</code></td><td width="50%">‘<samp>A.$0</samp>’</td></tr>
+    </tbody></table>
+    
+    <p>Notes:
+    </p>
+    <ul class="lidocu">
+    <li> Wildcards behave like symbols and are subject to the same algebraic
+      rules. E.g., ‘<samp>$0+2*$0</samp>’ is automatically transformed to ‘<samp>3*$0</samp>’.
+    </li>
+    <li> As shown in the last example, to use wildcards for indices you have to
+      use them as the value of an <code>idx</code> object. This is because indices must
+      always be of class <code>idx</code> (or a subclass).
+    </li>
+    <li> Wildcards only represent expressions or subexpressions. It is not
+      possible to use them as placeholders for other properties like index
+      dimension or variance, representation labels, symmetry of indexed objects
+      etc.
+    </li>
+    <li> Because wildcards are commutative, it is not possible to use wildcards
+      as part of noncommutative products.
+    </li>
+    <li> A pattern does not have to contain wildcards. ‘<samp>x</samp>’ and ‘<samp>x+y</samp>’
+      are also valid patterns.
+    </li>
+    </ul>
+    
+        
+    <p>
+        The most basic application of patterns is to check whether an expression
+        matches a given pattern. This is done by the following <code>match()</code> function.
+    </p>
+
+<h4 id="match">
+ match(Ex pattern), 
+ match(Ex pattern, dict repls);
+</h4>
+        
+        <p>First function returns <code>True</code> when the expression matches the pattern
+        and <code>False</code> if it doesn’t. If used in the second form, the actual
+        subexpressions matched by the wildcards get returned in the dict <code>repls</code> with ‘<samp>wildcard</samp>’ as a key. If <code>match()</code>
+        returns <code>False</code>, <code>repls</code> remains unmodified.
+        </p>
+        <p>The matching algorithm works as follows:
+        </p>
+        <ul class="lidocu">
+        <li> A single wildcard matches any expression. If one wildcard appears
+          multiple times in a pattern, it must match the same expression in all
+          places (e.g. ‘<samp>$0</samp>’ matches anything, and ‘<samp>$0*($0+1)</samp>’ matches
+          ‘<samp>x*(x+1)</samp>’ but not ‘<samp>x*(y+1)</samp>’).
+        </li><li> If the expression is not of the same class as the pattern, the match
+          fails (i.e. a sum only matches a sum, a function only matches a function,
+          etc.).
+        </li><li> If the pattern is a function, it only matches the same function
+          (i.e. ‘<samp>sin($0)</samp>’ matches ‘<samp>sin(x)</samp>’ but doesn’t match ‘<samp>exp(x)</samp>’).
+        </li><li> Except for sums and products, the match fails if the number of
+          subexpressions (<code>nops()</code>) is not equal to the number of subexpressions
+          of the pattern.
+        </li><li> If there are no subexpressions, the expressions and the pattern must
+          be equal (in the sense of <code>is_equal()</code>).
+        </li><li> Except for sums and products, each subexpression (<code>op()</code>) must
+          match the corresponding subexpression of the pattern.
+        </li></ul>
+        
+        <p>Sums (<code>add</code>) and products (<code>mul</code>) are treated in a special way to
+        account for their commutativity and associativity:
+        </p>
+        <ul class="lidocu">
+        <li> If the pattern contains a term or factor that is a single wildcard,
+          this one is used as the <em>global wildcard</em>. If there is more than one
+          such wildcard, one of them is chosen as the global wildcard in a random
+          way.
+        </li><li> Every term/factor of the pattern, except the global wildcard, is
+          matched against every term of the expression in sequence. If no match is
+          found, the whole match fails. Terms that did match are not considered in
+          further matches.
+        </li><li> If there are no unmatched terms left, the match succeeds. Otherwise
+          the match fails unless there is a global wildcard in the pattern, in
+          which case this wildcard matches the remaining terms.
+        </li></ul>
+        
+        <p>In general, having more than one single wildcard as a term of a sum or a
+        factor of a product (such as ‘<samp>a+$0+$1</samp>’) will lead to unpredictable or
+        ambiguous results.
+        </p>
+        <p>Here are some examples to demonstrate how it works:
+        </p>
+
+<pre class="codebg">
+ &gt;&gt;&gt; ((x+y)**a).match((x+y)**a)
+ True
+ &gt;&gt;&gt; ma={}
+ &gt;&gt;&gt; ((x+y)**a).match((x+wild(1))**wild(2),ma)
+ True
+ &gt;&gt;&gt; ma
+ {$2: a, $1: y}
+ &gt;&gt;&gt; ma.clear()
+     ((a+b)*(a+c)).match((wild(1)+b)*(wild(1)+c),ma)
+     ma
+ {$1: a}
+ &gt;&gt;&gt; ((a+b)*(a+c)).match((a+$1)*(a+$2));
+ {$1==b,$2==c} # (Unpredictable. The result might also be [$1==c,$2==b].)
+ &gt;&gt;&gt; ((a+b)*(a+c)).match(($1+$2)*($1+$3))
+    '''(The result is undefined. Due to the sequential nature of the algorithm
+    and the re-ordering of terms in GiNaC, the match for the first factor
+    may be {$1==a,$2==b} in which case the match for the second factor
+    succeeds, or it may be {$1==b,$2==a} which causes the second match to
+    fail.)'''
+ &gt;&gt;&gt; match(a*(x+y)+a*z+b).match(a*$1+$2) '''(This is also ambiguous and may return either 
+                                            {$1==z,$2==a*(x+y)+b} or{$1=x+y,$2=a*z+b}.)'''
+ &gt;&gt;&gt; (a+b+c+d+e+f).match(c)
+ False
+ &gt;&gt;&gt; (a+b+c+d+e+f).match(c+wild(0))
+ True
+ &gt;&gt;&gt; (a*b**2).match(a**wild(1)*b**wild(2))
+ False '''(The matching is syntactic, not algebraic, and "a" doesn't match "a**wild(1)"
+          even though a==a**1.)'''
+</pre>
+            
+  <h4 class="subsection">has(Ex pattern,has_options opt=has_nooptions):</h4>
+  <p>A more general way to look for patterns in expressions is provided by this
+  member function.
+  </p>
+  <p>This function checks whether a pattern is matched by an expression itself or
+  by any of its subexpressions.
+  </p>
+  <p>Some examples for illustration:
+  </p>
+<pre class="codebg">
+ &gt;&gt;&gt; (x*sin(x+y+2*a)).has(y)
+ True
+ &gt;&gt;&gt; (x*sin(x+y+2*a)).has(x+y)
+ False  '''This is because, "x+y" is not a subexpression of "x+y+2*a" (which
+    has the subexpressions "x", "y" and "2*a".)'''
+ &gt;&gt;&gt; (x*sin(x+y+2*a)).has(x+y+wild(1))
+ True #(But this is possible.)
+ &gt;&gt;&gt; (x*sin(2*(x+y)+2*a)).has(x+y);
+ False '''(This fails because "2*(x+y)" automatically gets converted to "2*x+2*y" of
+    which "x+y" is not a subexpression.)'''
+ &gt;&gt;&gt; (4*x**2-x+3).has(wild(1)*x);
+ True
+ &gt;&gt;&gt; (4*x**2+x+3).has(wild(1)*x)
+ False  '''(Another possible pitfall. The first expression matches because the term
+    "-x" has the form "(-1)*x". To check whether a polynomial
+    contains a linear term you should use the coeff() function instead.)'''
+</pre>
+
+    <p style="font-weight: bold;">has_options:</p>
+    There are one option available: <code>has_options_algebraic</code>. This option enables algebraic matching condition in product and power.
+<pre class="codebg">
+ &gt;&gt;&gt; e=x**5*y**2*z+x
+ &gt;&gt;&gt; e.has(x**5*y**2)
+ False 
+ &gt;&gt;&gt; e.has(x**5*y**2,has_options_algebraic)
+ True
+</pre>
+
+
+  <h4 id="find">find(Ex pattern, set found):
+  </h4>
+  <p>It works a bit like <code>has()</code> but it doesn’t stop upon finding the first
+  match. Instead, it appends all found matches to the specified list. If there
+  are multiple occurrences of the same expression, it is entered only once to
+  the list. <code>find()</code> returns false if no matches were found (it returns an empty list):
+  </p>
+<pre class="codebg">
+ &gt;&gt;&gt; se=set()
+ &gt;&gt;&gt; (1+x+x**2+x**3).find(x**wild(0),se)
+ True
+ &gt;&gt;&gt; se
+ {x**3, x**2}
+ &gt;&gt;&gt; se.clear()
+ &gt;&gt;&gt; (1+x+x**2+x**3).find(y,se)
+ False
+ &gt;&gt;&gt; se
+ set()
+</pre>
+
+
+  <Li><h3 class="h3class" id="map">Applying a function on subexpressions:</h3></Li>
+Sometimes you may want to perform an operation on specific parts of an expression while leaving the general structure of it intact. 
+GinacSympy offers the map() method to aid in the implementation of such operations.
+
+ <h4 id="map1">map(map_function f):</h4>
+It takes a class object that is subclassed from the <code>map_function</code> class. The <code>map_function</code> class declares a virtual function <code>expr_visitor</code> that you have to overload.
+The use of a virtual function makes it possible to supply more arguments to the function that is being mapped, or to keep local state information. Here is a sample implementation of <code>map_rem_quad()</code> that uses <code>map()</code> in a recursive fashion to remove even terms in a variable in expanded polynomial:
+<pre class="codebg">
+ &gt;&gt;&gt; class map_rem_even(map_function):
+        def __init__(self,var_):
+            self.var=var_
+        def expr_visitor(self,e):
+            if e.is_add() or e.is_mul():
+                return e.map(self)
+            elif e.is_power() and e.op(0).is_equal(self.var) and e.op(1).is_even():
+                return Ex(0)
+            else:
+                return e
+ &gt;&gt;&gt; from IPython.display import display
+     e=Ex(0)
+     for i in range(8):
+         e += pow(x, i) * pow(y, 8-i) * (i+1)
+     display(e)
+     do_rem_even=map_rem_even(x)
+     do_rem_even.expr_visitor(e)
+ 5  x^{4} y^{4}+2  x y^{7}+7  x^{6} y^{2}+3  x^{2} y^{6}+6  x^{5} y^{3}+8  x^{7} y+y^{8}+4  x^{3} y^{5}
+ 2  x y^{7}+6  x^{5} y^{3}+8  x^{7} y+y^{8}+4  x^{3} y^{5}
+</pre>
+
+ <h4 id="map2">map(Ex pattern):</h4>
+ It allows applying algebraic functions to operands. The argument to map() is an expression containing the wildcard <code>wild(0)</code>which acts as the placeholder for the operands:
+<pre class="codebg">
+ &gt;&gt;&gt; (a*b).map(sin(wild(0)))
+ sin(a)*sin(b)
+ &gt;&gt;&gt; (a+2*b).map(sin(wild(0)))
+ sin(a)+sin(2*b)
+</pre>
+
+        <li><h3 class="h3class" id="formulaRearrangement">Simplification:</h3></li>
+    <h4 id="normal">normal():</h4>
+    <p>
+      Some basic form of simplification of expressions is called for frequently. GinacSympy provides the
+    method <code>.normal()</code>, which converts a rational function into an equivalent rational function of
+    the form ‘numerator/denominator’ where numerator and denominator are coprime. If the input
+    expression is already a fraction, it just finds the GCD of numerator and denominator and cancels
+    it, otherwise it performs fraction addition and multiplication.
+    <code>.normal()</code> can also be used on expressions which are not rational functions as it will replace
+    all non-rational objects (like functions or non-integer powers) by temporary symbols to bring
+    the expression to the domain of rational functions before performing the normalization, and
+    re-substituting these symbols afterwards. This algorithm is also available as a separate method <code>.to_rational()</code>, described below.
+    </p>
+<pre class="codebg">
+ &gt;&gt;&gt; expr= apart(1/(x**3+1))  
+ &gt;&gt;&gt; expr.normal()
+ -(1+x)**(-1)*(-1+x-x**2)**(-1)
+</pre>
+
+    <h4 id="Simplify">Simplify(Ex expr, simplify_options opt=simplify_nooptions):</h4>
+    <p>It performs a sequence of preliminary algebraic and other transformations on expr and returns the simplest form it finds. It is the fastest method than other simplification functions.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Simplify(2**x*3**x*exp(x)*a**x)
+ (6*exp(1))**x*a**x
+ &gt;&gt;&gt; Simplify(sin(x)**2+cos(x)**2+2)
+ 3
+</pre>
+
+    <p class="point">simplify_options:</p>
+    <p>It has two options,</p> <code>simplify_options_trigCombine</code> and <code>simplify_options_hyperCombine</code>, and these options combine trigonmetric and hyperbolic functions, respectively.
+<pre class="codebg">
+ &gt;&gt;&gt; Simplify(sin(x)**3*cos(x),simplify_options_trigCombine)
+ -1/8*sin(4*x)+1/4*sin(2*x)
+</pre>
+
+        <h4 id="simplify">simplify(Ex expr, simplify_options opt=simplify_nooptions):</h4>
+        <p>It tries a wide range of transformations on expr and returns the simplest form it finds. It is slower than <code>Simplify</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; simplify(sqrt(x*x+x)-sqrt(x*(x+1)))
+ 0 
+</pre>
+
+        <h4 id="fullsimplify">fullsimplify(Ex expr, simplify_options opt=simplify_nooptions):</h4>
+      <p>It applies <code>simplify</code> function on expr recursively.</p>
+
+          <li><h3 class="h3class" id="formulaRearrangement">Formula rearrangement:</h3></li>
+
+          <h4 id="expand">expand(expand_options opt=expand_nooptions):</h4>
+<p>It bring an expression into expanded form.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; ((x+y)**4).expand()
+ 6*x**2*y**2+4*x**3*y+y**4+x**4+4*x*y**3
+</pre>
+<p class="point">expand_options:</p>
+It has three options. <code>expand_options_expand_indexed</code>-> expands indexed object. <code>expand_options_expand_function_args</code>-> expands the arguments of functions. <code>expand_options_expand_transcendental</code> expands transcendental functions like log.
+<pre class="codebg">
+ &gt;&gt;&gt; x,y=Ex("x,y",positive)
+ &gt;&gt;&gt; log(x*y).expand(expand_options_expand_transcendental)
+ log(x)+log(y)
+ &gt;&gt;&gt; sin((x+y)**2).expand(expand_options_expand_function_args)
+ sin(x**2+2*x*y+y**2)
+</pre>
+      
+        <h4 id="powerExpand">power_expand(expand_options opt=expand_nooptions):</h4>
+        <p>Expands power of expression.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; 2**(x+y).power_expand()
+ 2**x*2**y
+ &gt;&gt;&gt; ((3*exp(1))**x).power_expand()
+ 3**x*exp(x)
+</pre>
+
+      <h4 id="collect">collect(Ex vars, bool distributed = False):</h4>
+      <p>It is another useful method of multivariate polynomials. The first argument can also be a list of objects in which case the result is either a
+        recursively collected polynomial, or a polynomial in a distributed form with terms, as specified by the distributed flag.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; print(((x*x*y+y*x+y*x*b+a*x+b*x**2*y).collect(x)))
+ (y*b+y)*x**2+(y*b+a+y)*x
+ &gt;&gt;&gt; print(((x*x*y+y*x+y*x*b+a*x+b*x**2*y).collect(lst([x,y]))))
+ (a+(1+b)*y)*x+(1+b)*y*x**2
+ &gt;&gt;&gt; print(((x*x*y+y*x+y*x*b+a*x+b*x**2*y).collect(lst([x,y]),True)))
+ (1+b)*y*x+a*x+(1+b)*y*x**2
+</pre>
+
+      <h4 id="collectAll">collect_all(Ex vars, bool distributed = False):</h4>
+      <p>It can apply <code>collect</code> method on the arguments of functions and on the base of fractional power in nonpolynomial expressions. </p>
+<pre class="codebg">
+ &gt;&gt;&gt; ((x*x+y*x+a*x+b*x**2*sqrt(a*x+b*x)).collect_all(x))
+ (a+y)*x+(1+((a+b)*x)**(1/2)*b)*x**2
+</pre>
+      <h4 id="collectCommon">collect_common_factor(Ex expr):</h4>
+      <p>This method function doesn’t perform a full factorization but only looks for factors which are already
+        explicitly present.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (4*x*a+4*x*a+2*a*sqrt(4*x+4*b)).collect_common_factor()
+ 4*a*(2*x+(x+b)**(1/2))
+ 
+</pre>        
+      <h4 id="apart">apart(Ex expr, Ex var):</h4>
+      <p>It rewrites a rational expression as a sum of terms with minimal denominators, and treats all variables other than var as constants.  </p>
+<pre class="codebg">
+ &gt;&gt;&gt; apart(x/((x+4)*(4*x+a)),x)
+ a*(-16+a)**(-1)*(a+4*x)**(-1)-4*(-16+a)**(-1)*(4+x)**(-1)
+ &gt;&gt;&gt; apart(x**5/((x+1)*(4*x+5)),x)
+ -369/256+61/64*x-9/16*x**2+1/4*x**3+3125/256*(5+4*x)**(-1)-(1+x)**(-1)
+ &gt;&gt;&gt; apart(x/((x+1)**2*(4*x+5)),x)
+ -(1+x)**(-2)-20*(5+4*x)**(-1)+5*(1+x)**(-1)
+</pre>
+
+          <h4 id="toPolynomial">to_polynomial(Ex inp, dict repls):</h4>
+          <p>By calling this method we can transform an expression to a polynomial expression by replacing the nonpolynomial expressions with the generated temporary symbols. dict repls will be filled with the generated temporary symbols and their replacement expressions in a format that can be used directly for the subs() method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; repls={}
+     expr=(2*x/sin(x) - y/(3*sin(x))).to_polynomial(repls)
+     expr
+ symbol101*y*symbol100+2*x*symbol100
+ &gt;&gt;&gt; expr.subs(expr)
+ 2*x/sin(x) - y/(3*sin(x))
+</pre>
+
+          <h4 id="to_rational">to_rational(Ex inp,dict repls):</h4>
+          <p>By calling this method we can transform an expression to a rational expression by replacing the nonrational expressions with the generated temporary symbols. dict repls will be filled with the generated temporary symbols and their replacement expressions in a format that can be used directly for the subs() method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; repls={}
+     expr=(2*x/sin(x) - y/(3*sin(x))).to_rational(repls)
+     expr
+     2*symbol102**(-1)*x-1/3*symbol102**(-1)*y
+ &gt;&gt;&gt; expr.subs(expr)
+ 2*x/sin(x) - y/(3*sin(x))
+</pre>
+
+            
+    </ol>
+
+
+
+    
+    <br>
+    <br>
+    <hr>
+    <br>
+    <div class="pagefooter">
+        <p>
+            Copyright &copy; Mithun Bairagi 2024-present
+            <br>
+            Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+            <br>
+            <br>
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+    <h1>Plotting</h1>
+    <a href="#to_numpy_array">to_numpy_array,</a>
+    <p>GinacSympy expressions can be plotted using <em>matplotlib</em> library. In order to plot, at first we have to convert the GinacSympy expressions into <em>numpy</em> array using the following function</p>
+<pre id="to_numpy_array">
+ to_numpy_array(Ex f, list var_list, list array_list)  
+</pre>
+<p>Here <code>f</code> is the GinacSympy expression, <code>var_list</code> is the variable list of coordinate axes, and array_list is the corresponding numpy array of the variable list. The use of this function is cleared by the following examples:</p>
+<b>2d example:</b>
+<pre class="codebg">
+ &gt;&gt;&gt; import numpy as np
+ &gt;&gt;&gt; import matplotlib.pyplot as plt
+ &gt;&gt;&gt; from ginacsympy_abc import x
+ &gt;&gt;&gt; from ginacsympy import sin,Pi,to_numpy_array
+ &gt;&gt;&gt; f=5*sin(x*Pi.evalf())
+ &gt;&gt;&gt; x_a=np.linspace(0,5,100)
+ &gt;&gt;&gt; y=to_numpy_array(f,[x],[x_a])
+ &gt;&gt;&gt; plt.plot(x_a,y)  
+</pre>
+<b>3d example:</b>
+<pre class="codebg">
+ &gt;&gt;&gt; import numpy as np
+ &gt;&gt;&gt; import matplotlib.pyplot as plt
+ &gt;&gt;&gt; from ginacsympy_abc import x,y
+ &gt;&gt;&gt; from ginacsympy import sin,Pi,to_numpy_array
+ &gt;&gt;&gt; ax = plt.axes(projection='3d')
+ &gt;&gt;&gt; f=x**2+y**2
+ &gt;&gt;&gt; x_a=np.linspace(0,5,100)
+ &gt;&gt;&gt; y_a=np.linspace(0,5,100)
+ &gt;&gt;&gt; f_a=to_numpy_array(f,[x,y],[x_a,y_a])
+ &gt;&gt;&gt; ax.plot(x_a,y_a,f_a)  
+</pre>
+
+    <br>
+    <br>
+    <hr>
+    <br>
+    <div class="pagefooter">
+        <p>
+            Copyright &copy; Mithun Bairagi 2024-present
+            <br>
+            Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+            <br>
+            <br>
+        </p>
+    </div>
+    <script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

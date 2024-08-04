@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+        <h1>Tensor algebra</h1>
+        <p>Some frequently used special tensors such as the delta, epsilon and metric tensors are predefined
+                in GinacSympy. They have special properties when contracted with other tensor expressions and some
+                of them have constant matrix representations (they will evaluate to a number when numeric
+                indices are specified).</p>
+    <ol class="lidocu" class="h3class">
+        <li ><a class="h3class" href="#deltaTensor"><h3>Delta tensor</h3></a></li>
+        <a class="h4class" href="#delta_tensor">delta_tensor</a>,&nbsp;
+        <li ><a class="h3class" href="#generalMetricTensor"><h3>General metric tensor</h3></a></li>
+        <a class="h4class" href="#metric_tensor">metric_tensor</a>,&nbsp;
+        <li ><a class="h3class" href="#minkowskiMetricTensor"><h3>Minkowski metric tensor</h3></a></li>
+        <a class="h4class" href="#lorentz_g">lorentz_g</a>,&nbsp;
+        <li ><a class="h3class" href="#spinorMetric"><h3>Spinor metric tensor</h3></a></li>
+        <a class="h4class" href="#spinor_metric">spinor_metric</a>,&nbsp;
+        <li ><a class="h3class" href="#epsilonTensor"><h3>Epsilon tensor</h3></a></li>
+        <a class="h4class" href="#epsion_tensor">epsilon_tensor</a>,&nbsp;
+        <a class="h4class" href="#lorentz_eps">lorentz_eps</a>,&nbsp;
+        <li ><a class="h3class" href="#linearAlgebra"><h3>Linear algebra</h3></a></li>
+
+        <!-- <li ><a class="h3class" href="#"><h3></h3></a></li>
+        <a class="h4class" href="#"></a>,&nbsp;
+        <li ><a class="h3class" href="#"><h3></h3></a></li>
+        <a class="h4class" href="#"></a>,&nbsp;
+        <li ><a class="h3class" href="#"><h3></h3></a></li> -->
+    </ol>
+
+    <ol class="lidocu" class="h3class">
+        <li><h3 class="h3class" id="deltaTensor">Delta tensor</h3></a></li>
+        <p> The delta tensor takes two indices, is symmetric and has the matrix representation diag(1, 1,
+                1, ...).</p>
+        <h4 class="h4class" id="delta_tensor">delta_tensor(Ex i, Ex j):</h4>
+        <p>Delta tensor is constructed by this function.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i = idx("i",4)
+ &gt;&gt;&gt; j = idx("j",4)
+ &gt;&gt;&gt; (delta_tensor(i,j)*indexed(A,[i,j])).simplify_indexed()
+ A.i.i 
+</pre>
+
+        <li><h3 class="h3class" id="generalMetricTensor">General metric tensor</h3></a></li>
+        <p>It is a general symmetric metric tensor with two indices that
+can be used to raise/lower tensor indices. The metric tensor is denoted as ‘g’ in the output and
+if its indices are of mixed variance it is automatically replaced by a delta tensor </p>
+        <h4 class="h4class" id="metric_tensor">metric_tensor(Ex i1, Ex i2):</h4>
+        <p>This function creates a general symmetric metric tensor with two indices <code>i1</code> and <code>i2</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; ic = varidx("i",4)
+ &gt;&gt;&gt; jc = varidx("j",4)
+ &gt;&gt;&gt; i = ic.toggle_variance()
+ &gt;&gt;&gt; j = jc.toggle_variance()
+ &gt;&gt;&gt; A = Ex("A")
+ &gt;&gt;&gt; A_icjc = indexed(A,[ic,jc])
+ &gt;&gt;&gt; g_ij = metric_tensor(i,j)
+ &gt;&gt;&gt; (g_ij*A_icjc).simplify_indexed()
+ A.i~i
+</pre>
+
+        <li><h3 class="h3class" id="minkowskiMetricTensor">Minkowski metric tensor</h3></a></li>
+        <p>The Minkowski metric tensor is a special metric tensor with a constant matrix representation
+                which is either diag(1, -1, -1, ...) (negative signature, the default) or diag(-1, 1, 1, ...)
+                (positive signature).</p>
+        <h4 class="h4class" id="">lorentz_g(Ex i1, Ex i2, bool pos_sig=False):</h4>
+        <p>Minkowski metric tensor with two indices <code>i1</code> and <code>i2</code>, and with signature <code>pos_sig</code> is created with this function (although it is output as ‘eta’).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; ic = varidx("i",4)
+ &gt;&gt;&gt; jc = varidx("j",4)
+ &gt;&gt;&gt; i = ic.toggle_variance()
+ &gt;&gt;&gt; j = jc.toggle_variance()
+ &gt;&gt;&gt; A = Ex("A")
+ &gt;&gt;&gt; A_ij = indexed(A,[ic,jc])
+ &gt;&gt;&gt; delta_ij = delta_tensor(i,j)
+ &gt;&gt;&gt; (delta_ij*A_ij).simplify_indexed()
+ A.i~i
+</pre>
+
+        <li><h3 class="h3class" id="spinorMetric">Spinor metric tensor</h3></a></li>
+        <p> </p>
+        <h4 class="h4class" id="spinor_metric">spinor_metric(Ex i1, Ex i2):</h4>
+        <p> It creates a spinor metric tensor with specified indices <code>i1</code> and <code>i2</code>. The indices must be
+        of class spinidx or a subclass and have a dimension of 2. The spinor
+        metric is an antisymmetric tensor with a matrix representation of
+        [[ [[ 0, 1 ]], [[ -1, 0 ]] ]].
+        It is used to raise/lower indices of 2-component spinors. It is output as ‘eps’.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; ic = spinidx("i",2)
+ &gt;&gt;&gt; i = ic.toggle_variance()
+ &gt;&gt;&gt; jc = spinidx("j",2)
+ &gt;&gt;&gt; j = jc.toggle_variance()
+ &gt;&gt;&gt; s_metric_icjc = spinor_metric(ic,jc)
+ &gt;&gt;&gt; A = Ex("A")
+ &gt;&gt;&gt; A_i = indexed(A,[i])
+ &gt;&gt;&gt; e = s_metric_icjc*A_i
+ &gt;&gt;&gt; e.simplify_indexed()
+ -A~j
+</pre>
+
+        <li><h3 class="h3class" id="epsilonTensor">Epsilon tensor</h3></a></li>
+        <p>The epsilon tensor is totally antisymmetric, its number of indices is equal to the dimension of
+                the index space (the indices must all be of the same numeric dimension), and ‘eps.1.2.3...’
+                (resp. ‘eps~0~1~2...’) is defined to be 1. Its behavior with indices that have a variance also
+                depends on the signature of the metric. Epsilon tensors are output as ‘eps’. </p>
+
+        <h4 class="h4class" id="epsilon_tensor">Ex epsilon_tensor(Ex i1, Ex i2):</h4>
+        <p>This function creates an epsilon tensor in 2 Euclidean dimensions with <code>idx</code> objects <code>i1</code> and <code>i2</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i = idx("i",2)
+ &gt;&gt;&gt; j = idx("j",2)
+ &gt;&gt;&gt; epsilon_ij = epsilon_tensor(i,j)
+ &gt;&gt;&gt; A = Ex("A")
+ &gt;&gt;&gt; A_i = indexed(A,[i])
+ &gt;&gt;&gt; A_j = indexed(A,[j])
+ &gt;&gt;&gt; e = epsilon_ij*A_i*A_j
+ &gt;&gt;&gt; e.simplify_indexed()
+ 0
+</pre>
+
+        <h4 class="h4class">Ex epsilon_tensor(Ex i1, Ex i2, Ex i3):</h4>
+        <p>This function create an epsilon tensor in 3 Euclidean dimensions  with <code>idx</code> objects <code>i1</code>, <code>i2</code>, and <code>i3</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; i = idx("i",3)
+ &gt;&gt;&gt; j = idx("j",3)
+ &gt;&gt;&gt; k = idx("k",3)
+ &gt;&gt;&gt; epsilon_ijk = epsilon_tensor(i,j,k)
+ &gt;&gt;&gt; A = Ex("A")
+ &gt;&gt;&gt; A_i = indexed(A,[i])
+ &gt;&gt;&gt; A_j = indexed(A,[j])
+ &gt;&gt;&gt; A_k = indexed(A,[k])
+ &gt;&gt;&gt; e = epsilon_ijk*A_i*A_j*A_k
+ &gt;&gt;&gt; (e.simplify_indexed())
+ 0
+</pre>
+
+        <h4 class="h4class" id="lorentz_eps">Ex lorentz_eps(Ex i1, Ex i2, Ex i3, Ex i4, bool pos_sig=False):</h4>
+        <p>This function creates an epsilon tensor in a 4-dimensional Minkowski space with <code>varidx</code> objects <code>i1</code>, <code>i2</code>, <code>i3</code>, and <code>i4</code> (the last bool argument specifies whether the metric has negative or positive signature, as in the case of the Minkowski metric tensor).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; ic = varidx("i",4)
+ &gt;&gt;&gt; jc = varidx("j",4)
+ &gt;&gt;&gt; kc = varidx("k",4)
+ &gt;&gt;&gt; lc = varidx("l",4)
+ &gt;&gt;&gt; i = ic.toggle_variance()
+ &gt;&gt;&gt; j = jc.toggle_variance()
+ &gt;&gt;&gt; k = kc.toggle_variance()
+ &gt;&gt;&gt; l = lc.toggle_variance()
+ &gt;&gt;&gt; epsilon_ijkl = lorentz_eps(i,j,k,l)
+ &gt;&gt;&gt; epsilon_icjckclc = lorentz_eps(ic,jc,kc,lc)
+ &gt;&gt;&gt; A = Ex("A")
+ &gt;&gt;&gt; A_ijkl = indexed(A,[i,j,k,l])
+ &gt;&gt;&gt; e = epsilon_ijkl*epsilon_icjckclc*A_ijkl
+ &gt;&gt;&gt; e.simplify_indexed()
+ -24*A.i.j.k.l
+</pre>
+
+
+
+        <li><h3 class="h3class" id="linearAlgebra">Linear algebra</h3></a></li>
+        <p>The <code>matrix</code> class can be used with indices to do some simple linear algebra (linear combinations and products of vectors and matrices, traces and scalar products).</p>
+<pre class="codebg">
+ &gt;&gt;&gt; x,y,z = Ex("x,y,z")
+ &gt;&gt;&gt; A = matrix([[x*x,6,x+y],[2,0,z],[x*z,0,2]])
+ &gt;&gt;&gt; i = idx("i",3)
+ &gt;&gt;&gt; j = idx("j",3)
+ &gt;&gt;&gt; A_ij = indexed(A,[i,j])
+ &gt;&gt;&gt; X = matrix([[x],[y],[z]])
+ &gt;&gt;&gt; X_j = indexed(X,[j])
+ &gt;&gt;&gt; (A_ij*X_j).simplify_indexed()
+ [[x**3+6*y+(y+x)*z],[2*x+z**2],[z*x**2+2*z]].i
+</pre>
+
+        <!-- <h4 class="h4class" id=""></h4>
+        <p></p>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+        <p></p>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+        <p></p>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+</pre> -->
+
+    </ol>
+
+    
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+<script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

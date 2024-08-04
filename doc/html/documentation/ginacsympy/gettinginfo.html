@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+    <h1>Getting information about expressions</h1>
+
+    <p>
+        Sometimes it&rsquo;s useful to check whether a given expression is a plain number,
+        a sum, a polynomial with integer coefficients, or of some other specific type.
+        GinacSympy provides a couple of member functions of <code><b>Ex</b></code> object for this:
+    </p>
+<pre>
+<a href="#is_a">is_a(mathematical_object),</a>
+<a href="#is_ex_the">is_ex_the_function(mathematical_function),</a>
+<a href="#info">info(info_flags),</a>
+<a href="#return_type">return_type()</a> <a class="h3class">and</a> <a href="#return_type">return_type_tinfo(),</a> 
+<a class="h3class" href="#someUseful">Some useful method functions</a> 
+</pre>
+        
+<h4 id="is_a">is_a(mathematical_object):</h4>
+        <p>When the test made by <code><b>is_a(mathematical_object)</b></code>, <code><b>mathematical_object</b></code> is one of the
+        class names (See <a href="basic.html#the-class-hierarchy">the table</a>, for a list of all classes). For example:
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt;e=x+y
+ &gt;&gt;&gt;e.is_a(add)
+ True
+ &gt;&gt;&gt;e.is_a(mul)
+ False
+ &gt;&gt;&gt;e.is_a("mul") ##class name in string is also allowed.
+ False
+</pre>
+
+
+<h4 id="is_ex_the">is_ex_the_function(mathematical_function):</h4>
+        <p>It checks type of mathematical function like <code><b>sin(x),cos(x),log(x),...</b></code> etc.</p>
+
+<pre class="codebg">
+ &gt;&gt;&gt;s,l=sin(x),log(x)
+ &gt;&gt;&gt;s.is_ex_the_function(sin)
+ True
+ &gt;&gt;&gt;l.is_ex_the_function(log)
+ True
+ &gt;&gt;&gt;l.is_ex_the_function("log") ##function name in string is also allowed.
+ True
+</pre>   
+
+<h4 id="is_ex_the">info(info_flags):</h4>
+        <p>This method is used for checking certain attributes of expressions. The possible values for the <code>info_flags</code> argument are explained in the following table:
+        </p>
+        <table id="info_flags" border="2"><tr><td>
+        <table>
+        <tr><td width="30%"><strong>Flag</strong></td><td width="70%"><strong>Returns true if the object is&hellip;</strong></td></tr>
+        <tr><td width="30%"><code>info_flags_numeric</code></td><td width="70%">&hellip;a number (same as <code>is_a(numeric)</code>)</td></tr>
+        <tr><td width="30%"><code>info_flags_real</code></td><td width="70%">&hellip;a real number, symbol or constant (i.e. is not complex)</td></tr>
+        <tr><td width="30%"><code>info_flags_rational</code></td><td width="70%">&hellip;an exact rational number (integers are rational, too)</td></tr>
+        <tr><td width="30%"><code>info_flags_integer</code></td><td width="70%">&hellip;a (non-complex) integer</td></tr>
+        <tr><td width="30%"><code>info_flags_crational</code></td><td width="70%">&hellip;an exact (complex) rational number (such as <em class='math'>2/3+7/2*I</em>)</td></tr>
+        <tr><td width="30%"><code>info_flags_cinteger</code></td><td width="70%">&hellip;a (complex) integer (such as <em class='math'>2-3*I</em>)</td></tr>
+        <tr><td width="30%"><code>info_flags_positive</code></td><td width="70%">&hellip;not complex and greater than 0</td></tr>
+        <tr><td width="30%"><code>info_flags_negative</code></td><td width="70%">&hellip;not complex and less than 0</td></tr>
+        <tr><td width="30%"><code>info_flags_nonnegative</code></td><td width="70%">&hellip;not complex and greater than or equal to 0</td></tr>
+        <tr><td width="30%"><code>info_flags_posint</code></td><td width="70%">&hellip;an integer greater than 0</td></tr>
+        <tr><td width="30%"><code>info_flags_negint</code></td><td width="70%">&hellip;an integer less than 0</td></tr>
+        <tr><td width="30%"><code>info_flags_nonnegint</code></td><td width="70%">&hellip;an integer greater than or equal to 0</td></tr>
+        <tr><td width="30%"><code>info_flags_even</code></td><td width="70%">&hellip;an even integer</td></tr>
+        <tr><td width="30%"><code>info_flags_odd</code></td><td width="70%">&hellip;an odd integer</td></tr>
+        <tr><td width="30%"><code>info_flags_prime</code></td><td width="70%">&hellip;a prime integer (probabilistic primality test)</td></tr>
+        <tr><td width="30%"><code>info_flags_relation</code></td><td width="70%">&hellip;a relation (same as <code>is_a(relational)</code>)</td></tr>
+        <tr><td width="30%"><code>info_flags_relation_equal</code></td><td width="70%">&hellip;a <code>==</code> relation</td></tr>
+        <tr><td width="30%"><code>info_flags_relation_not_equal</code></td><td width="70%">&hellip;a <code>!=</code> relation</td></tr>
+        <tr><td width="30%"><code>info_flags_relation_less</code></td><td width="70%">&hellip;a <code>&lt;</code> relation</td></tr>
+        <tr><td width="30%"><code>info_flags_relation_less_or_equal</code></td><td width="70%">&hellip;a <code>&lt;=</code> relation</td></tr>
+        <tr><td width="30%"><code>info_flags_relation_greater</code></td><td width="70%">&hellip;a <code>&gt;</code> relation</td></tr>
+        <tr><td width="30%"><code>info_flags_relation_greater_or_equal</code></td><td width="70%">&hellip;a <code>&gt;=</code> relation</td></tr>
+        <tr><td width="30%"><code>info_flags_symbol</code></td><td width="70%">&hellip;a symbol (same as <code>is_a(symbol)</code>)</td></tr>
+        <tr><td width="30%"><code>info_flags_list</code></td><td width="70%">&hellip;a list (same as <code>is_a(lst)</code>)</td></tr>
+        <tr><td width="30%"><code>info_flags_polynomial</code></td><td width="70%">&hellip;a polynomial (i.e. only consists of sums and products of numbers and symbols with positive integer powers)</td></tr>
+        <tr><td width="30%"><code>info_flags_integer_polynomial</code></td><td width="70%">&hellip;a polynomial with (non-complex) integer coefficients</td></tr>
+        <tr><td width="30%"><code>info_flags_cinteger_polynomial</code></td><td width="70%">&hellip;a polynomial with (possibly complex) integer coefficients (such as <em class='math'>2-3*I</em>)</td></tr>
+        <tr><td width="30%"><code>info_flags_rational_polynomial</code></td><td width="70%">&hellip;a polynomial with (non-complex) rational coefficients</td></tr>
+        <tr><td width="30%"><code>info_flags_crational_polynomial</code></td><td width="70%">&hellip;a polynomial with (possibly complex) rational coefficients (such as <em class='math'>2/3+7/2*I</em>)</td></tr>
+        <tr><td width="30%"><code>info_flags_rational_function</code></td><td width="70%">&hellip;a rational function (<em class='math'>x+y</em>, <em class='math'>z/(x+y)</em>)</td></tr>
+        </table>
+        </td></tr></table>
+     
+    <h4 id="return_type">return_type() and return_type_tinfo():</h4>
+        <p>To determine whether an expression is commutative or non-commutative and if
+        so, with which other expressions it would commutate, you use the methods
+        <code><b>return_type()</b></code> and <code><b>return_type_tinfo()</b></code>. See <a href="non-commutative.html">Non-commutative objects</a>, for an explanation of these.
+        </p>
+        </div>
+
+    <h3 class="h3class" id="someUseful">Some useful method functions:</h3>
+        We can also use the following method functions to check the expressions:
+        <br>
+        <a>
+        is_add(), is_mul(), is_power(), is_symbol(), is_numeric(), is_relational(), is_matrix(), is_idx(), is_varidx(), is_spinidx(), is_indexed(), is_functions(), is_Limit(), is_Diff(), is_Integrate(), is_pseries(), is_number(), 
+        </a>
+        <br>
+        <a>
+        is_real(), is_rational(), is_integer(), is_crational(), is_cinteger(), is_positive(), is_negative(),is_nonnegative(), is_posint(), is_negint(), is_nonnegint(), is_even(), is_odd(), is_prime(),is_relation(), is_relation_equal(), is_relation_not_equal(), is_relation_less(), is_relation_less_or_equal(), is_relation_greater(), is_relation_greater_or_equal(),is_polynomial(Ex var),is_integer_polynomial(), is_cinteger_polynomial(), is_rational_polynomial(), is_crational_polynomial(), is_rational_function().
+        </a>
+<pre class="codebg">
+ &gt;&gt;&gt; e=Ex("sqrt(2)")
+ &gt;&gt;&gt; e.is_numeric()# It is not numeric object.
+ False
+ &gt;&gt;&gt; e.is_number()# But it is a number
+ True
+</pre>   
+        <br>
+        <br>
+        <hr>
+        <br>
+        <div class="pagefooter">
+            <p>
+                Copyright &copy; Mithun Bairagi 2024-present
+                <br>
+                Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+                <br>
+                <br>
+            </p>
+        </div>
+</body>
+</html>

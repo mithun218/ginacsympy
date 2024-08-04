@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+        <h1>Linear algebra</h1>
+
+    <!-- <ol class="lidocu" class="h3class">
+        <li ><a class="h3class" href="#"><h3></h3></a></li> -->
+        <a class="h4class" href="#matrix">matrix</a>,&nbsp;
+        <a class="h4class" href="#unitMatrix">unit_matrix</a>,&nbsp;
+        <a class="h4class" href="#diagMatrix">diag_matrix</a>,&nbsp;
+        <a class="h4class" href="#symbolicMatrix">symbolic_matrix</a>,&nbsp;
+        <a class="h4class" href="#rows">rows</a>,&nbsp;
+        <a class="h4class" href="#cols">cols</a>,&nbsp;
+        <a class="h4class" href="#set">set</a>,&nbsp;
+        <a class="h4class" href="#reducedMatrix">reduced_matrix</a>,&nbsp;
+        <a class="h4class" href="#subMatrix">sub_matrix</a>,&nbsp;
+        <a class="h4class" href="#add">add</a>,&nbsp;
+        <a class="h4class" href="#sub">sub</a>,&nbsp;
+        <a class="h4class" href="#mul">mul</a>,&nbsp;
+        <a class="h4class" href="#mulScalar">mul_scalar</a>,&nbsp;
+        <a class="h4class" href="#pow">pow</a>,&nbsp;
+        <a class="h4class" href="#transpose">transpose</a>,&nbsp;
+        <a class="h4class" href="#evalm">evalm</a>,&nbsp;
+        <a class="h4class" href="#determinant">determinant</a>,&nbsp;
+        <a class="h4class" href="#trace">trace</a>,&nbsp;
+        <a class="h4class" href="#charpoly">charpoly</a>,&nbsp;
+        <a class="h4class" href="#rank">rank</a>,&nbsp;
+        <a class="h4class" href="#inverse">inverse</a>,&nbsp;
+        <a class="h4class" href="#solve">solve</a>,&nbsp;
+        <a class="h4class" href="#isZeroMatrix">is_zero_matrix</a>,&nbsp;
+        <!-- <a class="h4class" href="#"></a>,&nbsp;
+        <a class="h4class" href="#"></a>,&nbsp; -->
+    <!-- </ol> -->
+<!-- 
+    <ol class="lidocu" class="h3class">
+        <li><h3 class="h3class" id="">:</h3></a></li>
+        <p> </p> -->
+
+        <h4 class="h4class" id="matrix">matrix(list l):</h4>
+        <p>The easiest way to create a matrix is using a list of lists, all of the same size:</p>
+<pre class="codebg">
+ &gt;&gt;&gt; matrix([[a,b,5],[c,3,a],[a*a+2,4,c*c]])
+ [[a,b,5],[c,3,a],[2+a**2,4,c**2]] 
+</pre>
+
+        <h4 class="h4class" id="unitMatrix">unit_matrix(int r, int c=0):</h4>
+        <p>This function creates an <code>r</code> by <code>r</code> (or <code>r</code> by <code>c</code>) unit matrix.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; unit_matrix(2,3)
+ [[1,0,0],[0,1,0]]
+ &gt;&gt;&gt; unit_matrix(3)
+ [[1,0,0],[0,1,0],[0,0,1]]
+</pre>
+
+        <h4 class="h4class" id="diagMatrix">diag_matrix(lst l):</h4>
+        <p>This function constructs a square diagonal matrix given the diagonal elements.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; diag_matrix([3,3,a])
+ [[3,0,0],[0,3,0],[0,0,a]]
+</pre>
+
+        <h4 class="h4class" id="symbolicMatrix">symbolic_matrix(int r, int c, str base_name):</h4>
+        <p>This function constructs a matrix filled with newly generated symbols made of the specified base name and the position of each element in the matrix at subscript.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; symbolic_matrix(3,3,"A")
+ [[A00,A01,A02],[A10,A11,A12],[A20,A21,A22]]
+</pre>
+
+        <h4 class="h4class" id="rows">rows():</h4>
+        <p>It returns number of rows of the matrix.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; matrix([[a,b,5],[c,3,a]]).rows()
+ 2
+</pre>
+
+        <h4 class="h4class" id="cols">cols():</h4>
+        <p>It returns number of columns of the matrix.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; matrix([[a,b,5],[c,3,a]]).cols()
+</pre>
+
+        <h4 class="h4class" id="set">set(int r, int c, value):</h4>
+        <p>It is also possible to modify the matrix element at <code>r</code>-th row and <code>c</code>-th column with the value <code>value</code> using this method or square bracket [].</p>
+<pre class="codebg">
+ &gt;&gt;&gt; tt=matrix([[a,b,5],[c,3,a],[a*a+2,4,c*c]])
+ &gt;&gt;&gt; tt.set(1,1,b**2) 
+ &gt;&gt;&gt; tt
+ [[a,b,5],[c,b**2,a],[2+a**2,4,c**2]]
+ &gt;&gt;&gt; tt[2,2]=c*c
+ &gt;&gt;&gt; tt
+ [[a,b,5],[c,b**2,a],[2+a**2,4,c**2]]
+</pre>
+
+
+        <h4 class="h4class" id="reducedMatrix">reduced_matrix(int r, int c):</h4>
+        <p>Matrices often arise by omitting elements of another matrix. This function has two integer arguments <code>r</code> and <code>c</code>, that specify which row and column to remove</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m=matrix([[a,b,5],[c,3,a],[a*a+2,4,c*c]])
+ &gt;&gt;&gt; m.reduced_matrix(1,2)
+ [[a,b],[2+a**2,4]]
+</pre>
+
+        <h4 class="h4class" id="subMatrix">sub_matrix(int r, int nr, int c, int nc):</h4>
+        <p>This function takes a row offset <code>r</code> and a column offset <code>c</code> and takes a block of <code>nr</code> rows and <code>nc</code> columns.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m=matrix([[a,b,5],[c,3,a],[a*a+2,4,c*c]])
+ &gt;&gt;&gt; m.sub_matrix(1,2,1,2)
+ [[3,a],[4,c**2]]
+</pre>
+
+        <h4 class="h4class" id="add">add(matrix m):</h4>
+        <p>It adds a matrix with matrix <code>m</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[a,b,5],[c,3,a],[a*a+2,4,c*c]])
+ &gt;&gt;&gt; m1.add(m1)
+ [[2*a,2*b,10],[2*c,6,2*a],[4+2*a**2,8,2*c**2]]
+</pre>
+
+        <h4 class="h4class" id="sub">sub(matrix m):</h4>
+        <p>It subtracts a matrix with matrix <code>m</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[a,b,5],[c,3,a],[a*a+2,4,c*c]])
+ &gt;&gt;&gt; m2=matrix([[a,b+2,5],[c,3,a],[a*a,4,c*c]])
+ &gt;&gt;&gt; m1.sub(m2)
+ [[0,-2,0],[0,0,0],[2,0,0]]
+</pre>
+
+        <h4 class="h4class" id="mul">mul(matrix m):</h4>
+        <p>It multiplies a matrix with matrix <code>m</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[a,1,5],[0,3,a],[a,4,c]])
+ &gt;&gt;&gt; m2=matrix([[a,0,5],[c,3,a],[0,4,3]])
+ &gt;&gt;&gt; m1.mul(m2)
+ [[a**2+c,23,15+6*a],[3*c,9+4*a,6*a],[a**2+4*c,12+4*c,3*c+9*a]]
+</pre>
+
+        <h4 class="h4class" id="mulScalar">mul_scalar(scalar):</h4>
+        <p>It multiplies a scalar <code>scalar</code> with a matrix.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[a,1,5],[0,3,a],[a,4,c]])
+ &gt;&gt;&gt; m1.mul_scalar(c)
+ [[c*a,c,5*c],[0,3*c,c*a],[c*a,4*c,c**2]]
+</pre>
+
+        <h4 class="h4class" id="pow">pow(int index):</h4>
+        <p></p>
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[0,0,5],[0,3,1],[a,0,c]])
+ &gt;&gt;&gt; m1.pow(3)
+ [[5*c*a,0,5*c**2+25*a],[(3+c)*a,27,9+5*a+c*(3+c)],[a*(c**2+5*a),0,5*c*a+c*(c**2+5*a)]]
+</pre>
+
+        <h4 class="h4class" id="transpose">transpose():</h4>
+        <p>It returns transpose of a matrix.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; matrix([[x,y,z],[a,b,c],[A,B,C]]).transpose()
+ [[x,a,A],[y,b,B],[z,c,C]]
+</pre>
+
+        <h4 class="h4class" id="evalm">evalm():</h4>
+        <p>For efficiency reasons, expressions with sums, products and powers of matrices are not automatically evaluated. you have to call this method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[a,1,5],[0,3,a],[a,4,c]])
+ &gt;&gt;&gt; m2=matrix([[a,0,5],[c,3,a],[0,4,3]])
+ &gt;&gt;&gt; m1*m2+m1
+ m1*m2+m1
+ &gt;&gt;&gt; (m1*m2+m1).evalm()
+ [[a**2+c+a,24,20+6*a],[3*c,12+4*a,7*a],[a**2+4*c+a,16+4*c,4*c+9*a]]
+</pre>
+
+        <h4 class="h4class" id="determinant">determinant(determinant_algo algo=determinant_algo_automatic):</h4>
+        <p>It computes determinant of the matrix.</p>
+        <p><code>determinant_algo:</code> The <code>algo</code> argument of this method allows to select between different algorithms for calculating the determinant. The asymptotic speed (as parametrized by the matrix size) can greatly differ between those algorithms, depending on the nature of the matrix’ entries. It has five options.</p>
+        <p><code>determinant_algo_automatic-> </code>Let the system choose. A heuristics is applied for automatic determination of a suitable algorithm.</p>
+        <p><code>determinant_algo_gauss-></code> Gauss elimination.  If $m_{i,j}^{(0)}$ are the entries of the
+                original matrix, then the matrix is transformed into triangular
+                form by applying the rules
+                $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)} / m_{k,k}^{(k)}$
+                The determinant is then just the product of diagonal elements.
+                Choose this algorithm only for purely numerical matrices.</p>
+        <p><code>determinant_algo_divfree-></code>Division-free elimination. This is a modification of Gauss
+                  elimination where the division by the pivot element is not
+                  carried out.  If $m_{i,j}^{(0)}$ are the entries of the
+                  original matrix, then the matrix is transformed into triangular
+                  form by applying the rules
+                  $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}$
+                  The determinant can later be computed by inspecting the diagonal
+                  elements only.  This algorithm is only there for the purpose of
+                  cross-checks.  It is never fast.</p>
+        <p><code>determinant_algo_laplace-></code>Laplace elimination. This is plain recursive elimination along
+                  minors although multiple minors are avoided by the algorithm.
+                  Although the algorithm is exponential in complexity it is
+                  frequently the fastest one when the matrix is populated by
+                  complicated symbolic expressions.</p>
+        <p><code>determinant_algo_bareiss-></code>Bareiss fraction-free elimination. Bareiss fraction-free elimination.  This is a modification of
+                  Gauss elimination where the division by the pivot element is
+                  <EM>delayed</EM> until it can be carried out without computing
+                  GCDs.  If $m_{i,j}^{(0)}$ are the entries of the original
+                  matrix, then the matrix is transformed into triangular form by
+                  applying the rules
+                      $m_{i,j}^{(k+1)} = (m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}) / m_{k-1,k-1}^{(k-1)}$
+                  (We have set $m_{-1,-1}^{(-1)}=1$ in order to avoid a case
+                  distinction in above formula.)  It can be shown that nothing more
+                  than polynomial long division is needed for carrying out the
+                  division.  The determinant can then be read of from the lower
+                  right entry.  This algorithm is rarely fast for computing
+                  determinants.</p>
+
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[a,1,5],[0,3,a],[a,4,c]])
+ &gt;&gt;&gt; m1.determinant()
+ 3*c*a-3*a**2-15*a
+</pre>
+
+        <h4 class="h4class" id="trace">trace():</h4>
+        <p>It computes trace of the matrix.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; matrix([[a,1,5],[0,3,a],[a,4,c]]).trace()
+ 3+c+a
+</pre>
+
+        <h4 class="h4class" id="charpoly">charpoly(Ex Lambda):</h4>
+        <p>This method computes characteristic polynomials of the matrix in variable <code>Lambda</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; matrix([[a,1,5],[0,3,a],[a,4,c]]).charpoly(P)
+ 3*c*a-3*a**2-P**3-15*a+P**2*(3+c+a)-(c*a+3*c-6*a)*P
+</pre>
+
+        <h4 class="h4class" id="rank">rank():</h4>
+        <p>It determines rank of the matrix.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; matrix([[a,1,5],[0,3,a],[a,4,c]]).rank()
+ 3
+</pre>
+        
+        <h4 class="h4class" id="inverse">inverse():</h4>
+        <p>Matrix is inverted by this method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; matrix([[c,1,5],[0,3,a],[0,4,0]]).inverse()
+ [[c**(-1),-5*c**(-1)*a**(-1),-1/4*c**(-1)*(-15+a)*a**(-1)],[0,0,1/4],[0,a**(-1),-3/4*a**(-1)]]
+</pre>
+
+        <h4 class="h4class" id="solve">solve(matrix vars, matrix rhs, solve_algo algo=solve_algo_automatic):</h4>
+        <p>linear systems may be solved by this method. Assuming the matrix object this method is applied on is an m times n matrix, then <code>vars</code> must be a n times p matrix of symbolic indeterminates and <code>rhs</code> a m times p matrix. The returned matrix then has dimension n times p and in the case of an underdetermined system will still contain some of the indeterminates from vars. If the system is overdetermined, an exception is thrown. <code>solve_algo</code> has five options.</p>
+        <p><code>solve_algo_automatic</code>->Let the system choose.  A heuristics is applied for automatic
+                  determination of a suitable algorithm.</p>
+        <p><code>solve_algo_gauss</code>-> Gauss elimination.  If $m_{i,j}^{(0)}$ are the entries of the
+                  original matrix, then the matrix is transformed into triangular
+                  form by applying the rules
+                      $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)} / m_{k,k}^{(k)}$
+                  This algorithm is well-suited for numerical matrices but generally
+                  suffers from the expensive division (and computation of GCDs) at
+                  each step.</p>
+        <p><code>solve_algo_divfree</code>-> Division-free elimination.  This is a modification of Gauss
+                  elimination where the division by the pivot element is not
+                  carried out.  If $m_{i,j}^{(0)}$ are the entries of the
+                  original matrix, then the matrix is transformed into triangular
+                  form by applying the rules
+                      $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}$
+                  This algorithm is only there for the purpose of cross-checks.
+                  It suffers from exponential intermediate expression swell.  Use it
+                  only for small systems.</p>
+        <p><code>solve_algo_bareiss</code>->Bareiss fraction-free elimination.  This is a modification of
+                  Gauss elimination where the division by the pivot element is
+                  <EM>delayed</EM> until it can be carried out without computing
+                  GCDs.  If $m_{i,j}^{(0)}$ are the entries of the original
+                  matrix, then the matrix is transformed into triangular form by
+                  applying the rules
+                      $m_{i,j}^{(k+1)} = (m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}) / m_{k-1,k-1}^{(k-1)}$
+                  (We have set $m_{-1,-1}^{(-1)}=1$ in order to avoid a case
+                  distinction in above formula.)  It can be shown that nothing more
+                  than polynomial long division is needed for carrying out the
+                  division.  This is generally the fastest algorithm for solving
+                  linear systems.  In contrast to division-free elimination it only
+                  has a linear expression swell.  For two-dimensional systems, the
+                  two algorithms are equivalent, however.</p>
+        <p><code>solve_algo_markowitz</code>->Markowitz-ordered Gaussian elimination. Same as the usual
+                  Gaussian elimination, but with additional effort spent on
+                  selecting pivots that minimize fill-in. Faster than the
+                  methods above for large sparse matrices (particularly with
+                  symbolic coefficients), otherwise slightly slower than
+                  Gaussian elimination.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[a,1,5],[0,3,a],[a,4,c]])
+ &gt;&gt;&gt; m1.solve(matrix([[x],[y],[z]]),matrix([[2],[3],[4]]))
+ [[1/3*a**(-1)*(3*c-4*a)*(-5+c-a)**(-1)],[1/3*(-5+c-a)**(-1)*(-15+3*c-2*a)],[-(-5+c-a)**(-1)]]
+</pre>
+
+        <h4 class="h4class" id="isZeroMatrix">is_zero_matrix():</h4>
+        <p>Method to check that all elements of the matrix are zero.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; m1=matrix([[a,1,5],[0,3,a],[a,4,c]]) 
+ &gt;&gt;&gt; m1.sub(m1).is_zero_matrix()
+ True 
+</pre>
+
+        <!-- <h4 class="h4class" id=""></h4>
+        <p></p>
+<pre class="codebg">
+ &gt;&gt;&gt; 
+</pre>
+
+        <h4 class="h4class" id=""></h4>
+        <h4 class="h4class" id=""></h4> -->
+    <!-- </ol> -->
+
+    
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+<script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    position: relative;
+}
+
+a{
+    color: blue;
+}
+
+span{
+    color: blue;
+}
+
+p{
+    /* color: black; */
+}
+pre{
+    color: brown;
+    font-weight: bold;
+}
+li{
+    /* color: black; */
+    /* margin-left: 2%; */
+}
+table{
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+code{
+    font-weight: bold;
+}
+h1{
+    /* padding: 1%; */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+h2{
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: red;
+    font-weight: bold;
+}
+    /* padding: 0.3%; */
+
+h3{
+    /* padding: 0.3%; */
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: green;
+    font-weight: bold;
+}
+
+h4{
+    /* padding: 0.3%; */
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: blue;
+}
+
+
+
+#navbar{
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    right: 0%;
+    background-color: deeppink;
+    height: 25px;
+    text-decoration: none;
+}
+
+.menu{
+    text-decoration: none;
+    color: #003bde;
+    margin-right: 5%;
+    display: inline-block;
+    font-size: large;
+}
+
+#documentation{
+    margin-left: 5%;
+}
+
+#contribution{
+    margin-right: 0;
+}
+
+#logo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#class_hierarchy{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#shortdescrip{
+    font-size: 18pt;
+    text-align: center;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: deeppink;
+}
+
+.pagefooter{
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 10pt;
+}
+
+
+.parentboxgrid{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+}
+.childboxgrid{
+    /* height: 10%;
+    width: 10%; */
+    padding: 10%;
+    margin: 5%;
+    font-size:28pt;
+    
+}
+#childboxgrid1{
+    background-color: lightcoral;
+}
+#childboxgrid2{
+    background-color: crimson;
+}
+
+
+
+.parentflextoc{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+}
+.childflextoc{
+    /* height: 10%;
+    width: 10%; */
+    padding: 6%;
+    margin: 5%;
+    font-size:24pt;
+    
+}
+#childflextoc1{
+    background-color: lightcoral;
+}
+#childflextoc2{
+    background-color: crimson;
+}
+
+
+.parentflexginacsympytoc{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+}
+.childflexginacsympytoc{
+    /* height: 10%;
+    width: 10%; */
+    padding: 3%;
+    margin: 1%;
+    font-size:16pt;
+    
+}
+#basic{
+    background-color: lightcoral;
+    
+}
+#checking{
+    background-color: crimson;
+    
+}
+#list{
+    background-color: red;
+}
+#constant{
+    background-color: darkred;
+}
+#function{
+    background-color: darkred;
+}
+#numerical{
+    background-color: lightcoral;
+}
+#number_theory{
+    background-color: rgba(255, 20, 145, 0.801);
+}
+#manipulation{
+    background-color: deeppink;
+}
+#series{
+    background-color: deeppink;
+}
+#transform{
+    background-color: deeppink;
+}
+#solving{
+    background-color: rgba(255, 0, 0, 0.877);
+}
+
+#calculus{
+    background-color: deeppink;
+}
+#polynomial_algebra{
+    background-color: rgba(255, 0, 0, 0.877);
+}
+#linear_algebra{
+    background-color: rgba(255, 20, 145, 0.63);
+}
+#tensor_algebra{
+    background-color: deeppink;
+}
+#non-commutative{
+    background-color: red;
+}
+#clifford_algebra{
+    background-color: crimson;
+}
+#color_algebra{
+    background-color: red;
+}
+
+.codebg{
+    display: flex;
+    background-color: whitesmoke;
+    justify-content:left;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.bodydocu{
+    margin: 22px;
+    font-size: 13pt;
+    color: black;
+}
+.h2class{
+    color: red;
+    font-weight: bold;
+}
+.h3class{
+    color: green;
+    font-weight: bold;
+}
+.h4class{
+    font-weight: bold;
+}
+
+.lidocu{
+    margin-left: 3%;
+}
+
+.margintopbottom{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.releaseitem{
+    display: block;
+    margin: 10px;
+    background-color: rgb(255, 182, 243);
+    color: darkred;
+    
+}
+
+.point{
+    font-weight: bold;
+}

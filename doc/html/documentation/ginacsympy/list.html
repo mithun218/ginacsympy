@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+    <h1>Lists of expressions</h1>
+
+<p>The GinacSympy class <code><b>lst</b></code> serves for holding a list of arbitrary
+expressions. 
+<!-- They are not as ubiquitous as in many other computer algebra
+packages, but are sometimes used to supply a variable number of arguments of
+the same type to GiNaC methods such as <code>subs()</code> and some <code>matrix</code>
+constructors, so you should have a basic understanding of them. -->
+</p>
+<p>
+<pre>
+<a href="#lst">lst,</a>
+</pre>
+    Member functions of <code><b>lst</b></code> class:
+</p>
+<pre>
+<a href="#lstadd">add(),</a>
+<a href="#lstmul">mul(),</a>
+<a href="#lstprepend">prepend() and append(),</a>
+<a href="#lstremove_first">remove_first(), remove_last(), and remove_all(),</a>
+<a href="#lstsort">sort(),</a>
+<a href="#lstunique">unique(),</a>
+
+</pre>
+
+
+<h4 id="lst">lst:</h4>
+<p><code><b>lst</b></code> class can be constructed from a python list of expressions:
+</p>
+<pre class="codebg">
+ &gt;&gt;&gt;li=lst([x*x,y+z,x])
+ &gt;&gt;&gt;li
+ {x**2,y+z,x}
+</pre>
+<p>Use the <code>nops()</code> method to determine the size (number of expressions) of
+a list and the <code>op()</code> method or the <code>[]</code> operator to access
+individual elements:
+</p>
+<pre class="codebg">
+ &gt;&gt;&gt;li.nops()
+ 3
+ &gt;&gt;&gt;li.op(0)
+ x*x
+</pre>
+<code><b>lst</b></code> allows in-place modifications. You can modify single element using <code>[]</code> operator:
+<pre class="codebg">
+ &gt;&gt;&gt;li[1]=x*z
+ &gt;&gt;&gt;li
+ {x**2,x*z,x}
+</pre>
+<p>You can iterate over the <code><b>lst</b></code> class:</p>
+<pre class="codebg">
+ &gt;&gt;&gt;li=lst([x*x,y+z,x])
+ &gt;&gt;&gt;for i in li:
+        print(i)
+ x**2
+ y+z
+ x
+ &gt;&gt;&gt;for i in reversed(li):
+        print(i)
+ x
+ y+z
+ x**2
+</pre>
+The member functions of <code><b>Ex</b></code> object <code>subs,simplify,diff,integrate</code> can be applied to each element of <code><b>lst</b></code> object:
+<pre class="codebg">
+ &gt;&gt;&gt;li.diff(x)
+ {2*x,0,1}
+ &gt;&gt;&gt;li.integrate(x)
+ {x**3/3,(y+z)*x,x**2/2}
+</pre>
+
+
+<h4 id="lstadd">add():</h4>
+<p>It sums all elements of <code><b>lst</b></code> class.</p>
+<pre class="codebg">
+ &gt;&gt;&gt;li.add()
+ x**2+y+z+x
+</pre>
+
+<h4 id="lstmul">mul():</h4>
+<p>It multplies all elements of <code><b>lst</b></code> class.</p>
+<pre class="codebg">
+ &gt;&gt;&gt;li.mul()
+ x**3*(y+z)
+</pre>
+
+<h4 id="lstprepend">prepend() and append():</h4>
+<p>You can prepend or append an expression to a <code><b>lst</b></code> with the <code>prepend()</code> and <code>append()</code> methods:</p>
+<pre class="codebg">
+ &gt;&gt;&gt;li.prepend(y)
+ &gt;&gt;&gt;li
+ {y,x*x,y+z,x}
+ &gt;&gt;&gt;li.append(z)
+ &gt;&gt;&gt;li
+ {y,x*x,y+z,x,z}
+</pre>
+
+<h4 id="lstremove_first">remove_first(), remove_last(), and remove_all():</h4>
+<p>You can remove the first or last element of a list with <code>remove_first()</code>
+and <code>remove_last()</code>:</p>
+<pre class="codebg">
+ &gt;&gt;&gt;li=lst([x,y,z])
+ &gt;&gt;&gt;li.remove_first()
+ &gt;&gt;&gt;li
+ {y,z}
+ &gt;&gt;&gt;li.remove_last()
+ &gt;&gt;&gt;li
+ {y}
+</pre>
+
+<p>You can remove all the elements of a list with <code>remove_all()</code>:</p>
+<pre class="codebg">
+ &gt;&gt;&gt;li.remove_all()
+ &gt;&gt;&gt;li
+ {}
+</pre>
+
+<h4 id="lstsort">sort():</h4>
+<p>You can bring the elements of a <code><b>lst</b></code> into a canonical order with <code>sort()</code>:
+</p>
+<pre class="codebg">
+ &gt;&gt;&gt;l1 = lst([x, 2, y, x+y])
+ &gt;&gt;&gt;l2 = lst([2, x+y, x, y])
+ &gt;&gt;&gt;l1.sort();
+ &gt;&gt;&gt;l2.sort();# l1 and l2 are now equal
+ &gt;&gt;&gt;l1
+ {y,y+x,2,x}
+ &gt;&gt;&gt;l2
+ {y,y+x,2,x}
+</pre>
+
+<h4 id="lstunique">unique():</h4>
+<p>Finally, you can remove all but the first element of consecutive groups of elements remain in the list with <code>unique()</code>:
+</p>
+<pre class="codebg">
+ &gt;&gt;&gt;l3 = {x, 2, 2, 2, y, x+y, y+x}
+ &gt;&gt;&gt;l3.unique();        
+ &gt;&gt;&gt;l3 
+ {x, 2, y, x+y}
+</pre>
+
+
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+</body>
+</html>

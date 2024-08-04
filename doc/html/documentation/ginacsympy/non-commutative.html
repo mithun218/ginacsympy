@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+        <h1>Non-commutative objects </h1>
+
+    <p>GinacSympy is equipped to handle certain non-commutative algebras. Three classes of
+        non-commutative objects are built-in which are mostly of use in high energy
+        physics:
+    </p>
+    <ul class="lidocu">
+        <li> Clifford (Dirac) algebra (class <code>clifford</code>)
+        </li><li> su(3) Lie algebra (class <code>color</code>)
+        </li><li> Matrices (unindexed) (class <code>matrix</code>)
+        </li>
+    </ul>
+        
+        <p>The <code>clifford</code> and <code>color</code> classes are subclasses of
+        <code>indexed</code> because the elements of these algebras usually carry
+        indices. The <code>matrix</code> class is described in more detail in
+        <a href="linear_algebra.html" target="_blank">Matrices</a>.
+        </p>
+        <p>Unlike most computer algebra systems, GinacSympy does not primarily provide an
+        operator (often denoted ‘<samp>&amp;*</samp>’) for representing inert products of
+        arbitrary objects. Rather, non-commutativity in GinacSympy is a property of the
+        classes of objects involved, and non-commutative products are formed with
+        the usual ‘<samp>*</samp>’ operator, as are ordinary products. GinacSympy is capable of
+        figuring out by itself which objects commutate and will group the factors
+        by their class. Consider this example:
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt; mu = varidx("mu",4)
+ &gt;&gt;&gt; nu = varidx("nu",4) 
+ &gt;&gt;&gt; a = idx("a",8)
+ &gt;&gt;&gt; b = idx("b",8)
+ &gt;&gt;&gt; e = -dirac_gamma(mu) * (2*color_T(a)) * 8 * color_T(b) * dirac_gamma(nu)
+ &gt;&gt;&gt; e
+ -16*(gamma~mu*gamma~nu)*(T.a*T.b)
+</pre>
+        
+        <p>As can be seen, GinacSympy pulls out the overall commutative factor ‘<samp>-16</samp>’ and
+        groups the non-commutative factors (the gammas and the su(3) generators)
+        together while preserving the order of factors within each class (because
+        Clifford objects commutate with color objects). The resulting expression is a
+        <em>commutative</em> product with two factors that are themselves non-commutative
+        products (‘<samp>gamma~mu*gamma~nu</samp>’ and ‘<samp>T.a*T.b</samp>’). For clarification,
+        parentheses are placed around the non-commutative products in the output.
+        </p>
+        <p>Non-commutative products are internally represented by objects of the class
+        <code>ncmul</code>, as opposed to commutative products which are handled by the
+        <code>mul</code> class. You will normally not have to worry about this distinction,
+        though.
+        </p>
+        <p>The advantage of this approach is that you never have to worry about using
+        (or forgetting to use) a special operator when constructing non-commutative
+        expressions. Also, non-commutative products in GiNaC are more intelligent
+        than in other computer algebra systems; they can, for example, automatically
+        canonicalize themselves according to rules specified in the implementation
+        of the non-commutative classes. The drawback is that to work with other than
+        the built-in algebras you have to implement new classes yourself in <a href="../ginacsym/ginacsymtoc.html"></a> ginacSym C++ library. Both
+        symbols and user-defined functions can be specified as being non-commutative.
+        </p>
+
+        <p>Information about the commutativity of an object or expression can be
+        obtained with the two member functions
+        </p>
+
+<pre>
+ int return_type()  
+ return_type_t return_type_tinfo()
+</pre>
+        
+    <p>The <code>return_type()</code> function returns one of three values (defined in
+    the header file <samp>flags.h</samp>), corresponding to three categories of
+    expressions in GiNaC:
+    </p>
+    <ul class="lidocu">
+        <li> <code>return_types_commutative</code>: Commutates with everything. Most GiNaC
+          classes are of this kind.
+        </li><li> <code>return_types_noncommutative</code>: Non-commutative, belonging to a
+          certain class of non-commutative objects which can be determined with the
+          <code>return_type_tinfo()</code> method. Expressions of this category commutate
+          with everything except <code>noncommutative</code> expressions of the same
+          class.
+        </li><li> <code>return_types_noncommutative_composite</code>: Non-commutative, composed
+          of non-commutative objects of different classes. Expressions of this
+          category don’t commutate with any other <code>noncommutative</code> or
+          <code>noncommutative_composite</code> expressions.
+        </li>
+    </ul>
+        
+        <p>The <code>return_type_tinfo()</code> method returns an object of type
+        <code>return_type_t</code> that contains information about the type of the expression
+        and, if given, its representation label (see section on dirac gamma matrices for
+        more details).  The objects of type <code>return_type_t</code> can be tested for
+        equality to test whether two expressions belong to the same category and
+        therefore may not commute.
+        </p>
+
+        <p>Here are a couple of examples:
+        </p>
+        <table border="1"><tbody><tr><td>
+        <table>
+        <tbody><tr><td width="60%"><strong>Expression</strong></td><td width="40%"><strong><code>return_type()</code></strong></td></tr>
+        <tr><td width="60%"><code>42</code></td><td width="40%"><code>commutative</code></td></tr>
+        <tr><td width="60%"><code>2*x-y</code></td><td width="40%"><code>commutative</code></td></tr>
+        <tr><td width="60%"><code>dirac_ONE()</code></td><td width="40%"><code>noncommutative</code></td></tr>
+        <tr><td width="60%"><code>dirac_gamma(mu)*dirac_gamma(nu)</code></td><td width="40%"><code>noncommutative</code></td></tr>
+        <tr><td width="60%"><code>2*color_T(a)</code></td><td width="40%"><code>noncommutative</code></td></tr>
+        <tr><td width="60%"><code>dirac_ONE()*color_T(a)</code></td><td width="40%"><code>noncommutative_composite</code></td></tr>
+        </tbody></table>
+        </td></tr></tbody></table>
+        
+        <p>A last note: With the exception of matrices, positive integer powers of
+        non-commutative objects are automatically expanded in GiNaC. For example,
+        <code>pow(a*b, 2)</code> becomes ‘<samp>a*b*a*b</samp>’ if ‘<samp>a</samp>’ and ‘<samp>b</samp>’ are
+        non-commutative expressions).
+        </p>
+
+
+
+
+    <div class="parentflextoc">
+        <div id="clifford_algebra" class="childflexginacsympytoc">
+            <a style="color: gold;" href="clifford_algebra.html">Clifford Algebra</a>
+        </div>
+        <div id="color_algebra" class="childflexginacsympytoc">
+            <a style="color: cyan;" href="color_algebra.html">Color Algebra</a>
+        </div>
+    </div>
+
+
+    <br>
+    <br>
+    <hr>
+    <br>
+    <div class="pagefooter">
+        <p>
+            Copyright &copy; Mithun Bairagi 2024-present
+            <br>
+            Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+            <br>
+            <br>
+        </p>
+    </div>
+    <script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

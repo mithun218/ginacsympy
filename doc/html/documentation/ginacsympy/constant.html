@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+    <h1>Mathematical Constants</h1>
+    <p>Constants behave pretty much like symbols except that they return some
+        specific number when the method <code>.evalf()</code> is called. These constants are all objects of class <code>constant</code>.
+        </p>
+        <p>The predefined known constants are: </p>
+
+    <table border="1"><tr><td>
+    <table>
+    <tr><td width="14%"><strong>Name</strong></td><td width="32%"><strong>Common Name</strong></td><td width="54%"><strong>Numerical Value (to 35 digits)</strong></td></tr>
+    <tr><td width="14%"><code>Pi</code></td><td width="32%">Archimedes&rsquo; constant</td><td width="54%">3.14159265358979323846264338327950288</td></tr>
+    <tr><td width="14%"><code>Catalan</code></td><td width="32%">Catalan&rsquo;s constant</td><td width="54%">0.91596559417721901505460351493238411</td></tr>
+    <tr><td width="14%"><code>Euler</code></td><td width="32%">Euler&rsquo;s (or Euler-Mascheroni) constant</td><td width="54%">0.57721566490153286060651209008240243</td></tr>
+    </table>
+    </td></tr></table>
+
+<pre class="codebg">
+ &gt;&gt;&gt;Pi.evalf()
+ 3.1415926535897932385
+ &gt;&gt;&gt;set_digits(30) # with 30 decimal digits precision
+ &gt;&gt;&gt;Pi.evalf()
+ 3.1415926535897932384626433832795028842
+</pre>
+
+
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+<script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

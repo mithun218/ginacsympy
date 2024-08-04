@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+</head>
+<body class="bodydocu">
+                                <h1>Calculus</h1>
+
+    <ol class="lidocu" class="h3class">
+        <li ><a class="h3class" href="#limit"><h3>Limit</h3></a></li>
+        <a class="h4class" href="#limit1">limit</a>,&nbsp;
+        <a class="h4class" href="#limit2">Limit</a>,&nbsp;
+        <a class="h4class" href="#expand1">expand</a>,&nbsp;
+        <a class="h4class" href="#subs1">subs</a>,&nbsp;
+        <a class="h4class" href="#evaluate">evaluate</a>,&nbsp;
+
+        <li ><a class="h3class" href="#differentiation"><h3>Differentiation</h3></a></li>
+        <a class="h4class" href="#diff">diff</a>,&nbsp;
+        <a class="h4class" href="#diff1">Diff</a>,&nbsp;
+        <a class="h4class" href="#expand2">expand</a>,&nbsp;
+        <a class="h4class" href="#subs2">subs</a>,&nbsp;
+        <a class="h4class" href="#changeVariable">change_variable</a>,&nbsp;
+        <a class="h4class" href="#evaluate1">evaluate</a>,&nbsp;
+
+        <li ><a class="h3class" href="#integration"><h3>Integration</h3></a></li>
+        <a class="h4class" href="#integrate">integrate</a>,&nbsp;
+        <a class="h4class" href="#integrate1">Integrate</a>,&nbsp;
+        <a class="h4class" href="#setPartial">set_partial_num</a>,&nbsp;
+        <a class="h4class" href="#expand3">expand</a>,&nbsp;
+        <a class="h4class" href="#subs3">subs</a>,&nbsp;
+        <a class="h4class" href="#changeVariable1">change_variable</a>,&nbsp;
+        <a class="h4class" href="#applyPartial">apply_partial_integration</a>,&nbsp;
+        <a class="h4class" href="#evaluate2">evaluate</a>,&nbsp;
+
+    </ol>
+
+    <ol class="lidocu" class="h3class">
+        <li><h3 class="h3class" id="limit">Limit:</h3></a></li>
+        <p> Limit points are sustituted for non-critical points. L’Hôpital’s rule is used in critical cases, with preprocessing of &infin;/&infin;, 0/0, &infin;-&infin;, 1^&infin;, 0^0, &infin;^0 forms and reformatting of product forms in order to apply L’Hôpital’s rule. A limited amount of bounded arithmetic is also employed where applicable.</p>
+
+        <h4 class="h4class" id="limit1">limit(e, Ex z, z0, str dir="+-"):</h4>
+    <p> 
+    <code>e </code>: expression, the limit of which is to be taken
+    </p>
+    <p> 
+    <code>z </code>: symbol representing the variable in the limit.
+        Other symbols are treated as constants. Multivariate limits
+        are not supported.
+    </p>
+    <p> 
+    <code>z0 </code>: the value toward which <code>z</code> tends. Can be any expression,
+         including &infin; and -&infin;.
+    </p>
+    <p> 
+    <code>dir</code> : string, optional (default: <code>"+-"</code>). If the limit depends upon the direction of approach to the limpoint, the onesided limit can be calculated using this string.
+        The limit is bi-directional if <code>dir="+-"</code>, from the right
+        (z&RightArrow;z0+) if <code>dir="+"</code>, and from the left (z&RightArrow;z0-) if
+        <code> dir="-"</code>. For infinite z0 (&infin; or -&infin;), the <code>dir</code>
+        argument is determined from the direction of the infinity
+        (i.e., <code>dir="-"</code> for &infin;).
+    </p>
+        
+<pre class="codebg">
+ &gt;&gt;&gt; limit(2/(x-3),x,3,"-")
+ -Infinity
+ &gt;&gt;&gt; limit(2/(x-3),x,3,"+")
+ Infinity
+ &gt;&gt;&gt; limit(2/(x-3),x,3)
+ Limit(2*(-3+x)**(-1),x,3)
+ &gt;&gt;&gt; limit(exp(3*x)/(exp(2*x)*log(x)+3),x,-Infinity)
+ 0
+ &gt;&gt;&gt; limit((exp(x)+exp(4*x)*log(x))/(exp(x)+exp(6*x)),x,0)
+ Infinity
+</pre>
+
+            <h4 class="h4class" id="limit2">Limit(e, Ex z, z0, str dir="+-"):</h4>
+        <p>This class is the Inert form of <code>limit</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Limit(2/(x-3),x,3,"+")
+ Limit(2/(x-3),x,3,"+")
+</pre>
+
+            <h4 class="h4class" id="expand1">expand():</h4>
+            <p>Apply addition rule of <code>Limit</code>.</p>
+<pre class="codebg">
+&gt;&gt;&gt; Limit(x**2+1/(1+x),x,a,"+").expand()
+Limit(-2*(z-x)**(-1),x,z,+)
+</pre>
+
+            <h4 class="h4class" id="subs1">subs(dict m, subs_options opt=subs_nooptions):</h4>
+        <p>Substitute <code>m</code> in the first and third operands of <code>Limit</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Limit(2/(x-a),x,a,"+").subs({a:z})
+ Limit(-2*(z-x)**(-1),x,z,+)
+</pre>
+
+
+        <h4 class="h4class" id="evaluate">evaluate():</h4>
+        <p>Evaluate inert form of <code>limit</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Limit(2/(x-3),x,3,"+").evaluate()
+ Infinity
+</pre>
+
+            <li><h3 class="h3class" id="differentiation">Differentiation</h3></a></li>
+
+            <h4 class="h4class" id="diff">diff(Ex x, int n = 1):</h4>
+        <p>It computes <code>n</code>-th order differentiation or partial differentiation of an expression with respect to <code>x</code>. 
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt; (x**n).diff(x,2)
+ n*(n-1)*x**(n-2)
+</pre>
+
+            <h4 class="h4class" id="diff1">Diff(Ex x, int n = 1):</h4>
+            <p>This class is the inert form of <code>diff</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Diff((sin(x)*a*x+x),x,2)
+ Diff((sin(x)*a*x+x),x,2)
+</pre>
+
+            <h4 class="h4class" id="expand2">expand():</h4>
+            <p>Apply addition rule of <code>Diff</code>.</p>
+<pre class="codebg">
+&gt;&gt;&gt; Diff(x**2+1/(1+x),x,2).expand()
+ Diff(x**2,x,2)+Diff(1/(1+x),x,2)
+</pre>
+
+            <h4 class="h4class" id="subs2">subs(dict m, subs_options opt=subs_nooptions):</h4>
+            <p>Substitute <code>m</code> in the first operand of <code>Diff</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Diff(x**2-a**2,x).subs({a**2:z})
+ Diff(-z+x**2,x,1)
+</pre>
+
+            <h4 class="h4class" id="changeVariable">change_variable(Ex oldNewOrNewOld, Ex newvarName):</h4>
+            <p>We can change differentiation variable of <code>Diff</code> class.</p>
+            <p><code>oldNewOrNewOld</code> is a relational object that contains the transformation equation from old variable to new variable, or new variable to old variable.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; f = (Diff(x**2+x**4,x,2)).change_variable(relational(z,x**2),z)
+ &gt;&gt;&gt; f
+ 2*Diff(2*x*Diff(x**4+x**2,z,1),z,1)*x
+ &gt;&gt;&gt; f=f.subs({x:sqrt(z)})
+ &gt;&gt;&gt; f
+ 2*Diff(2*z**(1/2)*Diff(z*(1+z),z,1),z,1)*z**(1/2)
+ &gt;&gt;&gt; f=f.evaluate().simplify()
+ &gt;&gt;&gt; f
+ 2+12*z
+</pre>
+
+
+            <h4 class="h4class" id="evaluate2">evaluate():</h4>
+            <p>Evaluates inert <code>Diff</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Diff((sin(x)*a*x+x),x,2).evaluate()
+ -4*a*x*cos(x)*sin(x)
+</pre>      
+
+
+
+            <li><h3 class="h3class" id="integration">Integration</h3></a></li>
+        <p>Integration of an algebraic expression is performed by partial integration and pattern matching.  </p>
+            <h4 class="h4class" id="integrate">integrate(Ex expr, Ex var, partial_num=-1):</h4>
+            <p>Gives indefinite integration of algebraic expression <code>expr</code> with respect to variable <code>var</code>. <code>partial_num</code> is the number of step of partial integration. By default it is assigned to -1 and GinacSympy can automatically detect the termination of partial integration. Unfortunately, GinacSympy is not so matured to integrate an algebraic expression. Sometime it cann't detect the infinite loop of partial integration and so it is desired to quote the number of step of partial integration.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; integrate((x+a)*exp(a*x+b),x)
+ exp(x*a+b)+exp(x*a+b)*x*a**(-1)-exp(x*a+b)*a**(-2)
+</pre>
+
+            <h4 class="h4class">integrate(Ex expr, Ex var,l, u, partial_num=-1):</h4>
+            <p>Gives definite integration  of algebraic expression <code>expr</code> with respect to variable <code>var</code> between the lower limit <code>l</code> and upper limit <code>u</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; integrate((x+a)*exp(a*x+b),x,0,1) 
+ exp(a+b)*a**(-1)-exp(b)+exp(a+b)-exp(a+b)*a**(-2)+exp(b)*a**(-2)  
+</pre>
+
+            <h4 class="h4class" id="integrate1">Integrate(Ex expr, Ex var, partial_num=-1):</h4>
+            <p>It is inert form of indefinite <code>integrate.</code></p>
+<pre class="codebg">
+ &gt;&gt;&gt; Integrate((x+a)*exp(a*x+b),x)
+ Integrate((x+a)*exp(a*x+b),x)   
+</pre>
+
+            <h4 class="h4class">Integrate(Ex expr, Ex var,l, u, partial_num=-1):</h4>
+            <p>It is inert form of definite <code>integrate.</code></p>
+<pre class="codebg">
+ &gt;&gt;&gt; Integrate((x+a)*exp(a*x+b),x,0,1)  
+ Integrate((x+a)*exp(a*x+b),x,0,1) 
+</pre>
+
+        <h4 class="h4class" id="expand3">expand():</h4>
+        <p>Apply addition rule of <code>Integrate</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Integrate(x**2+1/(1+x),x,2).expand()
+ Integrate((1+x)**(-1),x)+Integrate(x**2,x)
+</pre>
+
+            <h4 class="h4class" id="setPartial">set_partial_num(int i):</h4>
+            <p>It sets number of steps of partial integration of <code>Integrate</code> object, and when its value is evaluated by <code>evaluate</code> method, this number is used by <code>integrate</code> method.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; f=Integrate(sin(b*x)*log(x),x)
+ &gt;&gt;&gt; f.set_partial_num(2)
+ &gt;&gt;&gt; f.evaluate()
+ Integrate(x**(-2)*sin(x*b),x)*b**(-2)-cos(x*b)*log(x)*b**(-1)+x**(-1)*b**(-2)*sin(x*b)
+ &gt;&gt;&gt; f.set_partial_num(3)
+ &gt;&gt;&gt; f.evaluate()
+ -cos(x*b)*x**(-2)*b**(-3)-cos(x*b)*log(x)*b**(-1)-2*Integrate(cos(x*b)*x**(-3),x)*b**(-3)+x**(-1)*b**(-2)*sin(x*b)
+</pre>
+
+            <h4 class="h4class" id="subs3">subs(dict m, subs_options opt=subs_nooptions):</h4>
+            <p>Substitute <code>m</code> in the first operand of <code>Integrate</code>.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; Integrate(x**2-a**2,x).subs({a**2:z})
+ Integrate(x**2-z,x)
+</pre>
+
+            <h4 class="h4class" id="applyPartial">apply_partial_integration(int partial_num):</h4>
+            <p>This method of <code>Ex</code> object apply <code>partial_num</code> number of partial integration on <code>Integrate</code> object.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; f=Integrate(sin(b*x)*exp(x),x)
+ &gt;&gt;&gt; f=f.apply_partial_integration(1)
+ &gt;&gt;&gt; f
+ -cos(x*b)*exp(x)*b**(-1)+b**(-1)*Integrate(cos(x*b)*exp(x),x)
+ &gt;&gt;&gt; f=f.apply_partial_integration(2)
+ &gt;&gt;&gt; f
+ -cos(x*b)*exp(x)*b**(-1)+(exp(x)*b**(-1)*sin(x*b)-Integrate(exp(x)*sin(x*b),x)*b**(-1))*b**(-1)
+ &gt;&gt;&gt; f.diff(x)
+ sin(b*x)*exp(x)
+</pre>
+
+            <h4 class="h4class" id="changeVariable">change_variable(Ex oldNewOrNewOld, Ex newvarName):</h4>
+            <p>We can change integration variable of <code>Integrate</code> class.</p>
+            <p><code>oldNewOrNewOld</code> is a relational object that contains the transformation from old variable to new variable, or new variable to old variable.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; f = Integrate(1/(1+sin(x)),x).change_variable(relational(z,sin(x)),z)
+ &gt;&gt;&gt; f
+ Integrate(sec(x)*(1+sin(x))**(-1),z)  
+ &gt;&gt;&gt; (f).subs({sec(x):1/sqrt(1+z**2)})
+ Integrate((1+z)**(-1)*(1+z**2)**(-1/2),z)
+ &gt;&gt;&gt; f = (Integrate(cos(x)/(1+sin(x)),x,0,Pi/Ex(2))).change_variable(relational(z,1+sin(x)),z)
+ &gt;&gt;&gt; f
+ Integrate((1+sin(x))**(-1),z,1,2)
+ &gt;&gt;&gt; f.subs({1+sin(x):z})
+ Integrate(z**(-1),z,1,2)
+</pre>
+
+            <h4 class="h4class" id="evaluate2">evaluate():</h4>
+            <p>It evaluates the inert form <code>Integrate.</code></p>
+<pre class="codebg">
+&gt;&gt;&gt; Integrate((x+a)*exp(a*x+b),x,0,1).evaluate()
+exp(a+b)*a**(-1)-exp(b)+exp(a+b)-exp(a+b)*a**(-2)+exp(b)*a**(-2)   
+</pre>
+
+    </ol>
+
+                                
+
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+<script type="text/javascript" src="../js/version.js"></script>
+    
+</body>
+</html>

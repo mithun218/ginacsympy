@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+                                <h1>Number Theory</h1>
+
+        <a href="#mod">mod, </a>&nbsp;
+        <a href="#smod">smod, </a>&nbsp;
+        <a href="#irem">irem, </a>&nbsp;
+        <a href="#iquo">iquo, </a>&nbsp;
+        <a href="#quotientRemainder">quotient_remainder, </a>&nbsp;
+        <a href="#divisible">divisible, </a>&nbsp;
+        <a href="#isPrime">is_prime, </a>&nbsp;
+        <a href="#baseForm">base_form, </a>&nbsp;
+        <a href="#nextPrime">next_prime, </a>&nbsp;
+        <a href="#random">random, </a>&nbsp;
+        <a href="#randomPrime">random_prime, </a>
+        
+    <h4 id="mod">mod(a,b):</h4>
+    Modulus (in positive representation).
+    In general, <code> mod(a,b)</code> has the sign of b or is zero, and <code>rem(a,b)</code> has the
+    sign of a or is zero. This is different from Maple's <code>modep</code>, where the sign
+    of b is ignored. It is in agreement with Mathematica's <code>Mod</code>.
+    It returns a mod b in the range [0,abs(b)-1] with sign of b if both are
+    integer, 0 otherwise.
+<pre class="codebg">
+ &gt;&gt;&gt; mod(13,-3)
+ -2
+</pre>
+
+    <h4 id="smod">smod(a,b):</h4>
+    Modulus (in symmetric representation).
+    It returns a mod b in the range [-iquo(abs(b),2), iquo(abs(b),2)].
+<pre class="codebg">
+&gt;&gt;&gt; smod(13,-3)
+-2
+</pre>
+
+    <h4 id="irem">irem(a,b):</h4>
+    Numeric integer remainder. 
+    Equivalent to Maple's irem(a,b) as far as sign conventions are concerned.
+    In general, <code>mod(a,b)</code> has the sign of b or is zero, and <code>irem(a,b)</code> has the
+    sign of a or is zero.
+<pre class="codebg">
+ &gt;&gt;&gt; irem(5,-2)
+ 1
+</pre> 
+
+    <h4 id="iquo">iquo(a,b):</h4>
+    Numeric integer quotient.
+    Equivalent to Maple's iquo as far as sign conventions are concerned.  
+    return truncated quotient of a/b if both are integer, 0 otherwise.
+<pre class="codebg">
+ &gt;&gt;&gt; iquo(5,-2)
+ -2
+</pre>
+
+    <h4 id="quotientRemainder">quotient_remainder(a,b):</h4>
+    Numeric integer quotient and remainder.
+    Equivalent to Maple's iquo(a,b,'r') it obeyes the relation
+    r == a - iquo(a,b)[0]*b.
+    It returns truncated quotient of a/b and remainder if both are
+    integer, 0 otherwise.
+<pre class="codebg">
+ &gt;&gt;&gt; quotient_remainder(5,-2)
+ {-2,1}
+</pre>
+
+    <h4 id="divisible">divisible(a,b):</h4>
+    Yields True if b is divisible by a, and yields False if it is not. 
+<pre class="codebg">
+ &gt;&gt;&gt; divisible(5,2)
+ False
+</pre>
+
+    <h4 id="irem">is_prime(a):</h4>
+    Test whether a is prime.
+<pre class="codebg">
+ &gt;&gt;&gt; is_prime(5)
+ True
+</pre>
+
+    <h4 id="baseForm">base_form(a,b):</h4>
+    It converts the decimal number a in base b. 
+<pre class="codebg">
+ &gt;&gt;&gt; base_form(23,2)
+ 10111
+</pre>
+
+    <h4 id="nextPrime">next_prime(a):</h4>
+    Gives the smallest prime above a.
+<pre class="codebg">
+ &gt;&gt;&gt; next_prime(23)
+ 29
+</pre>
+
+    <h4 id="random">random(a):</h4>
+    a must be an integer > 0. This function returns a pseudorandom integer x in the range 0 &lt;= x &lt; a.
+<pre class="codebg">
+ &gt;&gt;&gt; random(23)
+ 21
+</pre>
+
+    <h4 id="randomPrime">random_prime(a):</h4>
+    gives a pseudorandom prime number in the range 2 to a.
+<pre class="codebg">
+&gt;&gt;&gt; random_prime(23)
+19
+</pre> 
+
+
+
+
+
+
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+</body>
+</html>

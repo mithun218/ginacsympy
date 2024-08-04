@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+        <h1>Color algebra</h1>
+
+        <p>For computations in quantum chromodynamics, GiNaC implements the base elements
+        and structure constants of the su(3) Lie algebra (color algebra). The base
+        elements <em class="math">T_a</em> are constructed by the function
+        </p>
+<pre>
+ Ex color_T(Ex a, int rl = 0)
+</pre>
+        <p>which takes two arguments: the index and a <em>representation label</em> in the
+        range 0 to 255 which is used to distinguish elements of different color
+        algebras. Objects with different labels commutate with each other. The
+        dimension of the index must be exactly 8 and it should be of class <code>idx</code>,
+        not <code>varidx</code>.
+        </p>
+        <p>The unity element of a color algebra is constructed by
+        </p>
+<pre>
+ Ex color_ONE(int rl = 0)
+</pre>
+        <p><strong>Please notice:</strong> You must always use <code>color_ONE()</code> when referring to
+        multiples of the unity element, even though it’s customary to omit it.
+        E.g. instead of <code>color_T(a)*(color_T(b)*indexed(X,b)+1)</code> you have to
+        write <code>color_T(a)*(color_T(b)*indexed(X,b)+color_ONE())</code>. Otherwise,
+        GiNaC may produce incorrect results.
+        </p>
+        <p>The functions
+        </p>
+<pre>
+ Ex color_d(Ex a, Ex b, Ex c)
+ Ex color_f(Ex a, Ex b, Ex c)
+</pre>
+        
+        <p>create the symmetric and antisymmetric structure constants <em class="math">d_abc</em> and
+        <em class="math">f_abc</em> which satisfy <em class="math">{T_a, T_b} = 1/3 delta_ab + d_abc T_c</em>
+        and <em class="math">[T_a, T_b] = i f_abc T_c</em>.
+        </p>
+        <p>These functions evaluate to their numerical values,
+        if you supply numeric indices to them. The index values should be in
+        the range from 1 to 8, not from 0 to 7. This departure from usual conventions
+        goes along better with the notations used in physical literature.
+        </p>
+        <p>There’s an additional function
+        </p>
+<pre>
+ Ex color_h(Ex a, Ex b, Ex c)
+</pre>
+        
+        <p>which returns the linear combination ‘<samp>color_d(a, b, c)+I*color_f(a, b, c)</samp>’.
+        </p>
+        <p>The function <code>simplify_indexed()</code> performs some simplifications on
+        expressions containing color objects:
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt; a,b,c,k,l = idx("a",8),idx("b",8),idx("c",8),idx("k",8),idx("l",8)
+ &gt;&gt;&gt; e = color_d(a, b, l) * color_f(a, b, k)
+ &gt;&gt;&gt; e.simplify_indexed()
+ 0
+ &gt;&gt;&gt; e = color_d(a, b, l) * color_d(a, b, k)
+ &gt;&gt;&gt; e.simplify_indexed()
+ 5/3*delta.k.l
+ &gt;&gt;&gt; e = color_f(l, a, b) * color_f(a, b, k)
+ &gt;&gt;&gt; e.simplify_indexed()
+ 3*delta.k.l
+ &gt;&gt;&gt; e = color_h(a, b, c) * color_h(a, b, c)
+ &gt;&gt;&gt; e.simplify_indexed()
+ -32/3
+ &gt;&gt;&gt; e = color_h(a, b, c) * color_T(b) * color_T(c) 
+ &gt;&gt;&gt; e.simplify_indexed()
+ -2/3*T.a
+ &gt;&gt;&gt; e = color_h(a, b, c) * color_T(a) * color_T(b) * color_T(c)
+ &gt;&gt;&gt; e.simplify_indexed() 
+ -8/9*ONE
+ &gt;&gt;&gt; e = color_T(k) * color_T(a) * color_T(b) * color_T(k)
+ &gt;&gt;&gt; e.simplify_indexed() 
+ 1/4*delta.b.a*ONE-1/6*T.a*T.b
+</pre>       
+        <p>To calculate the trace of an expression containing color objects you use one
+        of the functions
+        </p>
+<pre>
+ Ex color_trace(Ex e, set rls)
+ Ex color_trace(Ex e, lst rll)
+ Ex color_trace(Ex e, int rl = 0)
+</pre>
+        
+        <p>These functions take the trace over all color ‘<samp>T</samp>’ objects in the
+        specified set <code>rls</code> or list <code>rll</code> of representation labels, or the
+        single label <code>rl</code>; ‘<samp>T</samp>’s with other labels are left standing. For
+        example:
+        </p>
+<pre>
+ &gt;&gt;&gt; e = color_trace(4 * color_T(a) * color_T(b) * color_T(c))
+ &gt;&gt;&gt; e 
+ -I*f.a.c.b+d.a.c.b     
+</pre>
+        
+
+    
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+<script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

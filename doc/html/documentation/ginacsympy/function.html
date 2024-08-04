@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+        <h1>Mathematical function</h1>
+
+        <p>All predefined mathematical functions in GinacSympy are all objects of class <code>function</code>.  They accept one or more expressions as arguments and return one expression.  If the arguments are not numerical, the evaluation of the function may be halted, as it does in
+        the next example.
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt;(sin(x)).is_a(function)
+ True
+ &gt;&gt;&gt;gamma(x)
+ gamma(x)
+ &gt;&gt;&gt;gamma(3)
+ 6
+</pre>
+        <p>Besides evaluation most of these functions allow differentiation, series
+        expansion and so on.  
+        There are quite a number of useful functions hard-wired into GinacSympy. The predefined mathematical functions are
+        </p>
+
+        <ol class="lidocu" >
+            <li class="h3class"><a class="h3class" href="#numerical"><h3>Numerical Functions </h3></a></li>
+            <a href="#conjugateFunction">conjugate_function,</a>&nbsp;
+            <a href="#realPart">real_part_function</a>&nbsp;
+            <a href="#imagPart">imag_part_function,</a>&nbsp;
+            <a href="#abs">abs,</a>&nbsp;
+            <a href="#csgn">csgn,</a>&nbsp;
+            <!-- <li class="h3class"><a class="h3class" href="#"><h3>Integer and Number Theoretic Functions </h3></a></li> -->
+            
+            <li class="h3class"><a class="h3class" href="#combinatorial"><h3>Combinatorial Functions</h3></a></li>
+            <a href="#factorial">factorial,</a>&nbsp;
+            <a href="#binomial">binomial</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#elementaryTrans"><h3>Elementary Transcendental Functions</h3></a></li>
+            <a href="#exp">exp,</a>&nbsp;
+            <a href="#log">log,</a>&nbsp;
+            <a href="#logb">logb,</a>&nbsp;
+            <a href="#eta">eta,</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#trigonmetric"><h3>Trigonmetric Functions </h3></a></li>
+            <a href="#sin">sin,</a>&nbsp;
+            <a href="#cos">cos,</a>&nbsp;
+            <a href="#tan">tan,</a>&nbsp;
+            <a href="#csc">csc,</a>&nbsp;
+            <a href="#sec">sec,</a>&nbsp;
+            <a href="#cot">cot,</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#hyperbolic"><h3>Hyperbolic Functions </h3></a></li>
+            <a href="#sinh">sinh,</a>&nbsp;
+            <a href="#cosh">cosh,</a>&nbsp;
+            <a href="#tanh">tanh,</a>&nbsp;
+            <a href="#csch">csch,</a>&nbsp;
+            <a href="#sech">sech,</a>&nbsp;
+            <a href="#coth">coth,</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#inverseFunc"><h3>Inverse Functions </h3></a></li>
+            <a href="#asin">asin,</a>&nbsp;
+            <a href="#acos">acos,</a>&nbsp;
+            <a href="#atan">atan,</a>&nbsp;
+            <a href="#acsc">acsc,</a>&nbsp;
+            <a href="#asec">asec,</a>&nbsp;
+            <a href="#acot">acot,</a>&nbsp;
+            <a href="#asinh">asinh,</a>&nbsp;
+            <a href="#acosh">acosh,</a>&nbsp;
+            <a href="#atanh">atanh,</a>&nbsp;
+            <a href="#acsch">acsch,</a>&nbsp;
+            <a href="#asech">asech,</a>&nbsp;
+            <a href="#acoth">acoth,</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#orthogonalPoly"><h3>Orthogonal Polynomials </h3></a></li>
+            <a href="#legendreP">legendreP,</a>&nbsp;
+            <a href="#hermiteH">hermiteH,</a>&nbsp;
+            <a href="#gegenbauerC">gegenbauerC,</a>&nbsp;
+            <a href="#chebyshevT">chebyshevT,</a>&nbsp;
+            <a href="#chebyshevU">chebyshevU,</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#special"><h3>Special Functions </h3></a></li>
+            <a href="#legendreQ">legendreQ,</a>&nbsp;
+            <a href="#besselJ">besselJ,</a>&nbsp;
+            <a href="#besselY">besselY,</a>&nbsp;
+            <a href="#besselI">bessel,</a>&nbsp;
+            <a href="#besselK">besselK,</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#elliptic"><h3>Elliptic Integrals and Elliptic Functions </h3></a></li>
+            <a href="#EllipticK">EllipticK,</a>&nbsp;
+            <a href="#EllipticE">EllipticE,</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#exponentialIntegral"><h3>Exponential Integral and Related Functions </h3></a></li>
+            <a href="#sinIntegral">sinIntegral,</a>&nbsp;
+            <a href="#cosIntegral">cosIntegral,</a>&nbsp;
+            <a href="#sinhIntegral">sinhIntegral,</a>&nbsp;
+            <a href="#coshIntegral">coshIntegral,</a>&nbsp;
+            <a href="#expIntegralE">expIntegralE,</a>&nbsp;
+            <a href="#expIntegralEi">expIntegralEi,</a>&nbsp;
+
+            <li class="h3class"><a class="h3class" href="#"><h3> </h3></a></li>
+            <li class="h3class"><a class="h3class" href="#"><h3> </h3></a></li>
+            <li class="h3class"><a class="h3class" href="#"><h3> </h3></a></li>
+        </ol>
+
+
+        <h3>Tr</h3>
+        <a></a>
+        
+
+
+
+    <br>
+    <br>
+    <hr>
+    <br>
+    <div class="pagefooter">
+        <p>
+            Copyright &copy; Mithun Bairagi 2024-present
+            <br>
+            Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+            <br>
+            <br>
+        </p>
+    </div>
+</body>
+</html>

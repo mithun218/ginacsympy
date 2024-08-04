@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+</head>
+<body class="bodydocu">
+                                <h1>Series(Taylor,)</h1>
+ <ol>
+    <li ><a class="h3class" href="#taylor"><h3>Taylor series</h3></a></li>
+<pre>
+<a href="#pseries">pseries(relational rela=None, list epvector_list=None),</a>
+<a href="#series1">series(Ex r, int order, series_options opt = series_nooptions),</a>
+<a href="#getVar">get_var(),</a>
+<a href="#getPoint">get_point(),</a>
+<a href="#convertTo">convert_to_poly(bool no_order = False),</a>
+<a href="#isCompatible">is_compatible_to(pseries other), </a>
+<a href="#isTerminating">is_terminating(),</a>
+<a href="#coeffop">coeffop(int i),</a>
+<a href="#exponop">exponop(int i),</a>
+<a href="#addSeries">add_series(pseries other),</a>
+<a href="#mulConst">mul_const(other),</a>
+<a href="#mulSeries">mul_series(pseries other),</a>
+<a href="#powerConst">power_const(p, int deg),</a>
+<a href="#shiftExponents">shift_exponents(int deg),</a>
+</pre>
+ </ol>
+ 
+ <h3>Taylor series:</h3>
+  <p>Expressions know how to expand themselves as a Taylor series or (more
+generally) a Laurent series.  As in most conventional Computer Algebra
+Systems, no distinction is made between those two.  There is a class of
+its own for storing such series (<code>class pseries</code>) and a built-in
+function (called <code>Order</code>) for storing the order term of the series.
+As a consequence, if you want to work with series, i.e. multiply two
+series, you need to call the method <code>series</code> again to convert
+it to a series object with the usual structure (expansion plus order
+term).  </p>
+
+<h4 id="pseries">pseries(relational rela=None, list epvector_list=None):</h4>
+<p><code>rela</code> is expansion variable and point (must hold a relational), and <code>epvector_list</code> is list of [coefficient, power] pairs (coefficient must not be zero).
+Construct pseries from a lis of coefficients and powers.
+The powers must be integers (positive or negative) and in ascending order;
+the last coefficient can be Order(1) to represent a truncated, non-terminating series.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; pseries(relational(x,2),[[1,2],[2,3],[3,4]])
+ 1*(-2+x)**2+2*(-2+x)**3+3*(-2+x)**4
+</pre>
+
+<h4 id="series1">series(Ex r, int order, series_options opt = series_nooptions):</h4>
+<pre class="codebg">
+ &gt;&gt;&gt; ((1/(1-v**2/c**2)).series(v,10)) #series expansion around point v=0
+ 1+(c**(-2))*v**2+(c**(-4))*v**4+(c**(-6))*v**6+(c**(-8))*v**8+Order(v**10)
+ &gt;&gt;&gt; (1/(sin(x))).series(relational(x,1),3) #series expansion around point x=1
+ (sin(1)**(-1))+(-cos(1)*sin(1)**(-2))*(-1+x)+(cos(1)**2*sin(1)**(-3)+1/2*sin(1)**(-1))*(-1+x)**2+Order((-1+x)**3)
+</pre>
+
+<p>Note how we just called <code>.series(x,degr)</code> instead of
+    <code>.series(relational(x,0),degr)</code>.  This is a simple shortcut for <code>Ex</code>&rsquo;s
+    method <code>series()</code>: if the first argument is a symbol the expression
+    is expanded in that symbol around point <code>0</code>. 
+    <p style="font-weight: bold;">series_options:</p>
+    <p> The <code>suppress_branchcut</code> suppress branch cuts in series expansion.  Branch cuts manifest
+    themselves as step functions, if this option is not passed.  If
+    it is passed and expansion at a point on a cut is performed, then
+    the analytic continuation of the function is expanded.</p>
+<h4 id="getVar">get_var():</h4>
+Get the expansion variable.
+<pre class="codebg">
+ &gt;&gt;&gt; tt=(1/(sin(x))).series(relational(x,1),3)
+ &gt;&gt;&gt; tt.get_var()
+ x
+</pre>
+
+<h4 id="getPoint">get_point():</h4>
+<p>Get the expansion point.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; tt.get_point()
+ 1
+</pre>
+
+<h4 id="convertTo">convert_to_poly(bool no_order = False):</h4>
+no_order: discard higher order term.<br>
+Convert the pseries object to an ordinary polynomial.
+<pre class="codebg">
+ &gt;&gt;&gt; tt.convert_to_poly()
+ 1/2*(2*cos(1)**2*sin(1)**(-3)+sin(1)**(-1))*(-1+x)**2+sin(1)**(-1)-cos(1)*(-1+x)*sin(1)**(-2)+Order((-1+x)**3)
+ &gt;&gt;&gt; tt.convert_to_poly(True)
+ 1/2*(2*cos(1)**2*sin(1)**(-3)+sin(1)**(-1))*(-1+x)**2+sin(1)**(-1)-cos(1)*(-1+x)*sin(1)**(-2)
+</pre>
+
+<h4 id="isCompatible">is_compatible_to(pseries other):</h4>
+Check whether series is compatible to another series (expansion
+variable and point are the same.)
+<pre class="codebg">
+ &gt;&gt;&gt; series1=(1/(sin(x))).series(relational(x,1),3)
+ &gt;&gt;&gt; series2=(1/(1-v**2/c**2)).series(relational(v,1),4)
+ &gt;&gt;&gt; series1.is_compatible_to(series2.to_pseries())
+ False
+</pre>
+
+<h4 id="isTerminating">is_terminating():</h4>
+<p>Returns true if there is no order term, i.e. the series terminates and
+    False otherwise.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; series1.is_terminating()
+ False
+</pre>
+
+<h4 id="coeffop">coeffop(int i):</h4>
+Get coefficients.
+<pre class="codebg">
+ &gt;&gt;&gt; series1=(1/(sin(x))).series(relational(x,1),3)
+ &gt;&gt;&gt; series1.coeffop(2)
+ cos(1)**2*sin(1)**(-3)+1/2*sin(1)**(-1)
+</pre>
+
+<h4 id="exponop">exponop(int i):</h4>
+Get exponents.
+<pre class="codebg">
+ &gt;&gt;&gt; series1.exponop(2)
+ 2
+</pre>
+
+<h4 id="addSeries">add_series(pseries other)</h4>
+Add one series object to another, producing a pseries object that
+represents the sum.
+<pre class="codebg">
+ &gt;&gt;&gt; series1=(1/(sin(x))).series((x),3)
+ &gt;&gt;&gt; series2=(1/(1-x**2/c**2)).series((x),4)
+ &gt;&gt;&gt; series1.add_series(series2.to_pseries())
+ 1*x**(-1)+1+1/6*x+(c**(-2))*x**2+Order(x**3)
+</pre>
+
+<h4 id="mulConst">mul_const(other)</h4>
+Multiply a pseries object with a numerical constant, producing a pseries
+ object that represents the product.
+<pre class="codebg">
+ &gt;&gt;&gt; series1.mul_const(5)
+ 5*x**(-1)+5/6*x+Order(x**3)
+</pre>
+
+<h4 id="mulSeries">mul_series(pseries other)</h4>
+Multiply one pseries object to another, producing a pseries object that
+represents the product.
+<pre class="codebg">
+ &gt;&gt;&gt; series1.mul_series(series2.to_pseries())
+ 1*x**(-1)+(1/6+c**(-2))*x+Order(x**3)
+</pre>
+
+<h4 id="powerConst">power_const(p, int deg):</h4>
+Compute the p-th power of a series. deg is truncation order of series calculation
+<pre class="codebg">
+ &gt;&gt;&gt; series1=((sin(x))).series((x),7)
+ &gt;&gt;&gt; series1.power_const(3,5)
+ 1*x**3+Order(x**5)
+</pre>
+
+<h4 id="shiftExponents">shift_exponents(int deg):</h4>
+Return a new pseries object with the powers shifted by deg. 
+<pre class="codebg">
+ &gt;&gt;&gt; series1.shift_exponents(3)
+ 1*x**4+(-1/6)*x**6+1/120*x**8+Order(x**10)
+</pre>
+
+
+
+
+
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+<script type="text/javascript" src="../js/version.js"></script>
+    
+</body>
+</html>

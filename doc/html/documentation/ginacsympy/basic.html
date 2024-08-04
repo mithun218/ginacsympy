@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+    <h1>Basic concepts</h1>
+    <ol class="h2class">
+        <li ><h2 ><a class="h2class" href="#symbol">symbol</a></h2></li>
+        <a href="#Ex">Ex,</a>&nbsp;
+        <a href="#symbolAssumptions">symbol_assumptions,</a>&nbsp;
+        <a href="#assumption">assumption,</a>&nbsp;
+        <a href="#allSymbols">all_symbols</a>&nbsp;
+        <a href="#getSymbols">get_symbols</a>&nbsp;
+
+        <li><h2><a class="h2class" href="#functions">functions</a></h2></li>
+        <a href="#totalDiff">total_diff,</a>&nbsp;
+
+        <li><h2><a class="h2class" href="#expression">Expression</a></h2></li>
+            <ol class="h3class">
+                <li class="lidocu"><h3><a class="h3class" href="#conversions">Conversions to other mathematical object</a> </h3></li>
+                <li class="lidocu"><h3><a class="h3class" href="#anoteoncarret">A note on ^,/,== operators</a> </h3></li>
+            </ol>
+
+            <li><h2><a class="h2class" href="#automaticEval">Automatic evaluation</a></h2></li>
+
+            <li> <h2><a class="h2class" href="#precesion" >Numerical precesion</a></h2></li>
+            <a href="setDigits">set_digits,</a>&nbsp;
+            <a href="getDigits">get_digits,</a>&nbsp;
+
+            <li><h2><a class="h2class" href="#complex">Complex evaluation</a></h2></li>
+            <a>I,</a>&nbsp;
+            <a>conjugate,</a>&nbsp;
+            <a>real_part,</a>&nbsp;
+            <a>imag_part,</a>&nbsp;
+
+            <li><h2><a class="h2class" href="#comparing">Comparing expressions</a></h2></li>
+            <a href="#relational">relational operators,</a>&nbsp;
+            <a href="#isEqual">is_equal,</a>&nbsp;
+            <a href="#isZero">is_zero,</a>&nbsp;
+            <a href="#compare">compare,</a>&nbsp;
+
+        <li><h2><a class="h2class" href="#output_format">Output format</a></h2></li>
+    </ol>
+
+    <br>
+    <br>
+
+    <ol>
+        <li  class="h2class">
+            <h2 id="symbol" class="h2class">symbol</h2>
+        </li>
+        <h4 id="Ex">Ex(str expr,symbol_assumptions symboltype=complex):</h4>
+        <p>
+            symbol is the building block of an algebraic expression. A typical symbol definition looks like this:
+<pre id="code1" class="codebg">
+ &gt;&gt;&gt; from ginacsympy import Ex
+ &gt;&gt;&gt; x = Ex("x")
+</pre>
+            This definition actually contains three very different things:
+            <ul class="lidocu">
+                <li>a python variable named x</li>
+                <li>an <b>Ex</b> object stored in this python variable; this object represents the symbol in a GinacSympy expression </li>
+                <li>the string "x" which is the name of the symbol, used for printing
+                    expressions holding the symbol</li>
+            </ul>
+            We can assign a number of symbol names using a string of symbol names separated by commas in the following way
+<pre id="code2" class="codebg">
+ &gt;&gt;&gt; x,y,z = Ex("x,y,z")
+</pre>            
+           <b>ginacsympy_abc</b> module exports all latin and greek letters (except the predefined name, such as I,E,Pi) as symbols, so you can conveniently do 
+<pre id="code3" class="codebg">
+ &gt;&gt;&gt; from ginacsympy_abc import x, y
+</pre>      
+            <h4 id="symbolAssumptions">symbol_assumptions:</h4>
+            There are different types of symbol in GinacSympy. They are complex, real, and positive symbols, and we can create these symbols using <b>Ex</b> object with the <code>symbol_assumptions</code> <b>complex, real,</b> and <b>positive</b>:
+<pre id="code4" class="codebg">
+ &gt;&gt;&gt; x = Ex("x") #complex symbol
+ #or
+ &gt;&gt;&gt; x = Ex("x",complex)
+ &gt;&gt;&gt; y = Ex("y",real) #real symbol
+ &gt;&gt;&gt; z = Ex("z",positive) #positive symbol
+ &gt;&gt;&gt; alpha = Ex("\alpha") #latex name of symbol is also allowed
+ &gt;&gt;&gt; alpha
+ &alpha;#in jupyter notebook greek symbol will be shown
+    </pre>  
+            The symbolic behavior of these three different kinds of symbol are different:
+<pre  id="code5" class="codebg">
+ &gt;&gt;&gt;real(x)
+ real(x)
+ &gt;&gt;&gt;imag(x)
+ imag(x)
+ &gt;&gt;&gt;sqrt(x*x)
+ sqrt(x*x)
+ &gt;&gt;&gt;real(y)
+ y
+ &gt;&gt;&gt;imag(y)
+ 0
+ &gt;&gt;&gt;sqrt(y*y)
+ sqrt(y*y)
+ &gt;&gt;&gt;real(z)
+ z
+ &gt;&gt;&gt;imag(z)
+ 0
+ &gt;&gt;&gt;sqrt(z*z)
+ z
+</pre>
+
+        <h4 id="assumption">assumption():</h4>
+            We can get the type of symbol:
+<pre id="code6" class="codebg">
+ &gt;&gt;&gt; x.assumption()
+ {x: 'complex'}
+</pre>          
+
+            <h4 id="allSymbols">all_symbols():</h4>
+            All defined symbols with assumptions can also be obtained in 
+<pre id="code7" class="codebg">
+ &gt;&gt;&gt; all_symbols()
+ {x: 'complex',
+ _FAIL: 'complex',
+ factSymb_: 'complex',
+ symb_: 'complex',
+ y: 'real',
+ nan: 'complex',
+ z: 'positive'}
+</pre>
+        </p>
+
+        <h4 id="getSymbols">get_symbols():</h4>
+        Get all symbols from an expression in <code>lst</code>.
+<pre class="codebg">
+ &gt;&gt;&gt; (x*y+z**2).get_symbols()
+ {x,y,x}
+</pre>
+
+        <li  class="h2class">
+            <h2 id="functions" class="h2class">functions</h2>
+        </li>
+        <p>
+            To create a mathematical undefined function that depend on algebraic variables or algebraic expressions, pass a string of the function name and the symbol names or the algebraic expression to the class <b>functions</b>.
+<pre id="code8" class="codebg">
+ &gt;&gt;&gt; x,y,z = Ex("x,y,z")  
+ &gt;&gt;&gt; f=functions("f",[x])#function f depends on variable x
+ &gt;&gt;&gt; f
+ f(x)
+ &gt;&gt;&gt; diff(f,x) #differentiation
+ Diff(f(x),x)#inert differentiation
+ &gt;&gt;&gt; g=functions("g",[x,x**2+y**2])#function f depends on variable x and algebraic expression x**2+y**2
+ &gt;&gt;&gt; diff(g,x)
+ Diff(g(x,x^2+y^2),x)+2*x*g(x,x^2+y^2)
+</pre> 
+            Assumptions can be passed to <b>functions</b> the same as with a symbol. 
+<pre id="code9" class="codebg">
+ &gt;&gt;&gt; f=functions("f",[x],real)  
+ &gt;&gt;&gt; f.info(info_flags_real) 
+ True
+</pre>       
+            <h4 id="totalDiff">total_diff(Ex var):</h4>
+            This method of <code>functions</code> object determines total differentiation by applying chain rule of differentiation.
+<pre class="codebg">
+ &gt;&gt;&gt; g=functions("g",[x,y])
+ &gt;&gt;&gt; f=functions("f",[x,g]) 
+ &gt;&gt;&gt; (f).total_diff(x)
+ (Diff(g(x,y),y,1)*Diff(y,x,1)+Diff(g(x,y),x,1))*Diff(f(x,g(x,y)),g(x,y),1)+Diff(f(x,g(x,y)),x,1)
+ &gt;&gt;&gt; (f).total_diff(x).subs({y:x,g:x**2+y**2}).evaluate()
+ 2*(y+x)*Diff(f(x,g(x,y)),g(x,y),1)+Diff(f(x,g(x,y)),x,1)
+</pre>
+        </p>
+        <li  class="h2class">
+            <h2 id="expression" class="h2class">Expression</h2>
+        </li>
+
+        <p>
+            Expressions representing a mathematical object like a variable, number, function, sum, product, etc., are <a href="https://ginac.org/documentation">GiNaC</a> expressions.
+            Many GiNaC classes, like <b> add, mul, power</b>, and <b>lst</b>, act as containers for subexpressions. For example, with the help of these containers the expressions 3**x - 2*sin(y / Pi) can be written as 
+            <pre>add(power(numeric(3),symbol(x)),mul(sin(mul(power(constant(Pi),numeric(-1)), symbol(y))),numeric(-2)))</pre>
+            <br>
+            The following table shortly summarizes what kinds of mathematical objects are stored in the different classes:
+            <div>
+            <table id="the-class-hierarchy" border="2"><tr><td>
+                <table>
+                <tr><td width="22%"><code>symbol</code></td><td width="78%">Algebraic symbols <em class='math'>a</em>, <em class='math'>x</em>, <em class='math'>y</em>&hellip;</td></tr>
+                <tr><td width="22%"><code>constant</code></td><td width="78%">Constants like 
+                <em class='math'>Pi</em></td></tr>
+                <tr><td width="22%"><code>numeric</code></td><td width="78%">All kinds of numbers, <em class='math'>42</em>, <em class='math'>7/3*I</em>, <em class='math'>3.14159</em>&hellip;</td></tr>
+                <tr><td width="22%"><code>add</code></td><td width="78%">Sums like <em class='math'>x+y</em> or <em class='math'>a-(2*b)+3</em></td></tr>
+                <tr><td width="22%"><code>mul</code></td><td width="78%">Products like <em class='math'>x*y</em> or <em class='math'>2*a**2*(x+y+z)/b</em></td></tr>
+                <tr><td width="22%"><code>ncmul</code></td><td width="78%">Products of non-commutative objects</td></tr>
+                <tr><td width="22%"><code>power</code></td><td width="78%">Exponentials such as <em class='math'>x**2</em>, <em class='math'>a**b</em>, 
+                <code>sqrt(</code><em class='math'>2</em><code>)</code>
+                &hellip;</td></tr>
+                <tr><td width="22%"><code>pseries</code></td><td width="78%">Power Series, e.g. <em class='math'>x-1/6*x**3+1/120*x**5+O(x**7)</em></td></tr>
+                <tr><td width="22%"><code>function</code></td><td width="78%">A mathematical function like
+                <em class='math'>sin(2*x)</em></td></tr>
+                <tr><td width="22%"><code>functions</code></td><td width="78%">A symbolic function like
+                    <em class='math'>f(x,y)</em></td></tr>
+                <tr><td width="22%"><code>Limit</code></td><td width="78%">Inert limit</td></tr>
+                <tr><td width="22%"><code>Diff</code></td><td width="78%">Inert differentiation</td></tr>
+                <tr><td width="22%"><code>Integrate</code></td><td width="78%">Inert integration</td></tr>
+                <tr><td width="22%"><code>lst</code></td><td width="78%">Lists of expressions {<em class='math'>x</em>, <em class='math'>2*y</em>, <em class='math'>3+z</em>}</td></tr>
+                <tr><td width="22%"><code>matrix</code></td><td width="78%"><em class='math'>m</em>x<em class='math'>n</em> matrices of expressions</td></tr>
+                <tr><td width="22%"><code>relational</code></td><td width="78%">A relation like the identity <em class='math'>x</em><code>==</code><em class='math'>y</em></td></tr>
+                <tr><td width="22%"><code>indexed</code></td><td width="78%">Indexed object like <em class='math'>A_ij</em></td></tr>
+                <tr><td width="22%"><code>tensor</code></td><td width="78%">Special tensor like the delta and metric tensors</td></tr>
+                <tr><td width="22%"><code>idx</code></td><td width="78%">Index of an indexed object</td></tr>
+                <tr><td width="22%"><code>varidx</code></td><td width="78%">Index with variance</td></tr>
+                <tr><td width="22%"><code>spinidx</code></td><td width="78%">Index with variance and dot (used in Weyl-van-der-Waerden spinor formalism)</td></tr>
+                <tr><td width="22%"><code>wildcard</code></td><td width="78%">Wildcard for pattern matching</td></tr>
+                </table>
+                </td></tr></table>
+            </div>
+
+            To get an idea about what kinds of symbolic composites may be built we have a look at the
+            most important classes in the class hierarchy and some of the relations among the classes:
+            <div><img id="class_hierarchy" src="../../img/class_hierarchy.png" height="500"></div>
+
+        <h3 class="h3class" id="conversions">Conversions to other mathematical object:</h3>
+        We can convert <code>Ex</code> object to other mathematical object using following method functions:
+        <br>
+        <a>to_numeric(), to_relational(), to_lst(), to_matrix(), to_idx, to_varidx(), to_spinidx(), to_indexed(), to_pseries(), to_functions(), to_Diff, to_Integrate()</a>
+<pre class="codebg">
+ &gt;&gt;&gt; e=3*matrix([[x,3],[2,y]])
+ &gt;&gt;&gt; e.op(0).to_matrix().trace()
+ x+y
+</pre>
+
+        <h3 id="anoteoncarret">A note on ^,/,== operators:</h3>
+            You may have noticed that we have been using ** for exponentiation instead of the standard ^. That’s because GinacSympy follows Python’s conventions. In Python, ^ represents logical exclusive or.
+            <br>
+            In Python 3 / represents floating point division. But, in GinacSympy, the division of two Integers gives a rational and that can be done using <b>div</b> function:
+<pre id="code10" class="codebg">
+ &gt;&gt;&gt; div(1/2)  
+ 1/2 
+</pre>       
+            The <b>Ex</b> class can also be used to convert strings into GinacSympy expressions. 
+<pre id="code11" class="codebg">
+ &gt;&gt;&gt; str_expr = "x**2 + 3*x - 1/2"
+ &gt;&gt;&gt; expr = Ex(str_expr)
+ &gt;&gt;&gt; expr
+ x**2 + 3*x - 1/2
+</pre> 
+            '==' operator is used for equality testing in Python. For this reason, <b>relational()</b> class is used  to create symbolic equalities 
+<pre id="code12" class="codebg">
+ &gt;&gt;&gt; relational(x,2)  
+ x==2
+</pre>              
+            Here we observe that GinacSympy uses '==' operator to show a symbolic equalities. We can use 
+            <b>equal
+                not_equal,
+                less,
+                less_or_equal,
+                greater,
+                greater_or_equal,</b> 
+
+            options to create different types of symbolic equalities: 
+<pre id="code13" class="codebg">
+ &gt;&gt;&gt; relational(x,2,less)  
+ x&lt;2
+ &gt;&gt;&gt; relational(x,2,less_or_equal)  
+ x&leq;2
+</pre>
+        </p>
+
+        <li class="h2class"><h2 id="automaticEval">Automatic evaluation</h2></li>
+        <p>GinacSympy performs some automatic transformations on expressions, to simplify them and put them
+            into a canonical form. Some examples</p>
+<pre class="codebg">
+ &gt;&gt;&gt; x+7*x
+ 8*x
+ &gt;&gt;&gt; 8*x**2/x**(div(2,3))
+ 8*x**(4/3)
+ &gt;&gt;&gt; 5*(x+5)
+ 25+5*x
+ &gt;&gt;&gt; (exp(a)**5)
+ exp(5*a)
+ &gt;&gt;&gt; exp(a*x)*exp(b*x)
+ exp(x*b+a*x)
+ &gt;&gt;&gt; sqrt(-2*a)
+ sqrt(2)*sqrt(-a)
+ &gt;&gt;&gt; sqrt(-2)
+ I*sqrt(2)
+ &gt;&gt;&gt; x=Ex("x",real)
+ &gt;&gt;&gt; sin(-x**2)
+ -sin(x**2)
+ &gt;&gt;&gt; (sqrt(2))**(div(9,2))
+ 4*2**(1/4)
+</pre>
+
+        
+        <li class="h2class">
+            <h2 id="precesion" class="h2class">Numerical precesion</h2>
+        </li>
+        <p>The function <code>evalf</code> that is used to convert any number in
+            GinacSympy's expressions into floating point numbers. This can be done to
+            arbitrary predefined accuracy:
+            </p>
+<pre class="codebg">
+ &gt;&gt;&gt; evalf(1/7)
+ 0.14285714285714285714
+ &gt;&gt;&gt; set_digits(150)
+ &gt;&gt;&gt; evalf(1/7)
+ 0.14285714285714285714285714285714285714285714285714285714285714285714285714285714285714285714285714285714285
+ &gt;&gt;&gt; get_digits()
+ 150
+</pre>
+
+        <li class="h2class">
+            <h2 id="complex" class="h2class">Complex evaluation</h2>
+        </li>
+        The imaginary unit in GinacSympy is a predefined <code>Ex</code> object with the name <code>I</code>.
+        <p>For dealing with complex expressions there are the methods</p>
+        <div>
+    <pre>
+    conjugate(),
+    real_part(),
+    imag_part(),
+    </pre></div>
+        
+        <p>that return respectively the complex conjugate, the real part and the
+        imaginary part of an expression. Complex conjugation works as expected
+        for all built-in functions and objects. Taking real and imaginary
+        parts has not yet been implemented for all built-in functions. In cases where
+        it is not known how to conjugate or take a real/imaginary part one
+        of the functions <code>conjugate</code>, <code>real_part</code> or <code>imag_part</code>
+        is returned. For instance, in case of a complex symbol <code>x</code>
+        (symbols are complex by default), one could not simplify
+        <code>conjugate(x)</code>. In the case of strings of gamma matrices,
+        the <code>conjugate</code> method takes the Dirac conjugate.
+        For example,
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt;x,y = Ex("x,y")
+ &gt;&gt;&gt;real_part(x)
+ real_part(x)
+ &gt;&gt;&gt;(3*I*x*y + sin(2*Pi*I*y)).conjugate()
+ -I*sinh(2*y*Pi)-(3*I)*y*conjugate(x)
+ &gt;&gt;&gt;a,b=varidx(Ex("a"),4),varidx(Ex("b"),4)
+ &gt;&gt;&gt;(dirac_gamma(a)*dirac_gamma(b)*dirac_gamma5()).conjugate()
+ -gamma5*gamma~b*gamma~a
+</pre>
+        
+
+        
+        <li class="h2class">
+            <h2 id="comparing" class="h2class">Comparing expressions</h2>
+        </li>
+        <h4 id="relational">relational operator:</h4>
+            <p>
+                Expressions can be compared with the usual Python relational operators like ==, &gt;, and &lt;.
+            </p>
+<pre class="codebg">
+ &gt;&gt;&gt; expand(x+x*(x+2))==(x+x*x+2*x)
+ True
+</pre>
+        <h4 id="isEqual">is_equal(Ex other):</h4>
+        <p>Checking equality with other expression.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; expand(x+x*(x+2)).is_equal(x+x*x+2*x)
+ True
+</pre>
+
+    <h4 id="isZero">is_zero():</h4>
+    <p>Checking whether the expression is zero.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; expand(x+x*(x+2)).is_zero()
+ False
+</pre>
+
+    <h4 id="compare">compare(Ex other):</h4>
+    <p>It returns 0 if self and other are equal, -1 if self sorts before other, and 1 if self
+        sorts after other.</p>
+<pre class="codebg">
+ &gt;&gt;&gt; (x+x*(x+2)).compare(x+x*x+2*x)
+ 1
+</pre>
+
+        <li class="h2class">
+            <h2 id="output_format" class="h2class">Output format</h2>
+        </li>
+        <p>
+            In the jupyter notebook or lab, it will use MathJax to render <b>LaTeX</b> 
+
+            <div class="margintopbottom"><img id="jupyteroutput1" src="../../img/jupyteroutput1.png"></div>
+            
+            To get a string form of an expression, use <code>str(expr)</code>. This is also the form that is produced by <code>print(expr)</code>. String forms are designed to be easy to read, but in a form that is correct Python syntax so that it can be copied and pasted. The  <code>str(expr)</code> form of an expression will usually look exactly the same as the expression as you would enter it.
+            To get string in <b>LaTeX</b> form we will use <b>to_latex_string()</b> member function of <b>Ex</b> object.
+.
+        </p>
+    </ol>
+
+    <br>
+    <br>
+    <hr>
+    <br>
+    <div class="pagefooter">
+        <p>
+            Copyright &copy; Mithun Bairagi 2024-present
+            <br>
+            Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+            <br>
+            <br>
+        </p>
+    </div>
+</body>
+</html>
