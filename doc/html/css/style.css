@@ -147,7 +147,7 @@ h4{
 
 .parentflextoc{
     display: flex;
-    height: 100vh;
+    height: 50vh;
     width: 100vw;
     flex-wrap: wrap;
     justify-content: center;
@@ -162,12 +162,12 @@ h4{
     font-size:24pt;
     
 }
-#childflextoc1{
+/* #childflextoc1{
     background-color: lightcoral;
 }
 #childflextoc2{
     background-color: crimson;
-}
+} */
 
 
 .parentflexginacsympytoc{
@@ -185,9 +185,11 @@ h4{
     padding: 3%;
     margin: 1%;
     font-size:16pt;
+    background-color:  deeppink;
+    color: yellow;
     
 }
-#basic{
+/* #basic{
     background-color: lightcoral;
     
 }
@@ -243,7 +245,7 @@ h4{
 }
 #color_algebra{
     background-color: red;
-}
+} */
 
 .codebg{
     display: flex;
