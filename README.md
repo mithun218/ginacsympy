@@ -39,6 +39,6 @@ GinacSympy releases are available as wheel packages for Windows and Linux on [Py
 	>>>expr.factor()
 	(a+b+c+d)**5
 	
-For in-depth documentation [click here.](https://rawcdn.githack.com/mithun218/ginacsympy/db189a107e142860dd9434adbbb30d9376e67463/doc/html/index.html)
+For in-depth documentation [click here.](https://rawcdn.githack.com/mithun218/ginacsympy/2d41cf2c7436a8d09928eb49a2182a0c4d3a3900/doc/html/index.html)
 
 	
