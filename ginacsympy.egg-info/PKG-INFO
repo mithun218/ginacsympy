@@ -1,10 +1,12 @@
 Metadata-Version: 2.1
 Name: ginacsympy
-Version: 1.0.0
+Version: 1.0.1
 Summary: A Cython frontend to the fast C++ symbolic manipulation library GinacSym. 
+Home-page: https://rawcdn.githack.com/mithun218/ginacsympy/2d41cf2c7436a8d09928eb49a2182a0c4d3a3900/doc/html/index.html
 Author: Mithun Bairagi
 Author-email: bairagirasulpur@gmail.com
 License: GPLv2 or above
+Project-URL: Source, https://github.com/mithun218/ginacsympy
 Platform: win32
 Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: OS Independent
@@ -54,6 +56,6 @@ GinacSympy releases are available as wheel packages for Windows and Linux on [Py
 	>>>expr.factor()
 	(a+b+c+d)**5
 	
-For in-depth documentation [click here.](https://rawcdn.githack.com/mithun218/ginacsympy/db189a107e142860dd9434adbbb30d9376e67463/doc/html/index.html)
+For in-depth documentation [click here.](https://rawcdn.githack.com/mithun218/ginacsympy/2d41cf2c7436a8d09928eb49a2182a0c4d3a3900/doc/html/index.html)
 
 	

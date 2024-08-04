@@ -76,7 +76,10 @@ setup(
     long_description = long_description,
     long_description_content_type = "text/markdown",
     license='GPLv2 or above',
-    # url = "https://ginacsympy.org",
+    url = "https://rawcdn.githack.com/mithun218/ginacsympy/2d41cf2c7436a8d09928eb49a2182a0c4d3a3900/doc/html/index.html",
+    project_urls={
+              'Source': 'https://github.com/mithun218/ginacsympy',
+          },
 #    packages=find_packages(), #automatically find the packages that are recognized in the __init__.py
     platforms=sys.platform,
     classifiers=[
