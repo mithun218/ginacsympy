@@ -11,6 +11,7 @@ imap_function.cpp
 imap_functions.h
 pyproject.toml
 setup.py
+setupwheel.py
 doc/html/contribution.html
 doc/html/index.html
 doc/html/install.html

@@ -30,7 +30,7 @@
 #define GINACSYMLIB_MINOR_VERSION 0
 
 /* Micro version of ginacsym */
-#define GINACSYMLIB_MICRO_VERSION 0
+#define GINACSYMLIB_MICRO_VERSION 2
 
 // ginacsym library version information. It has very little to do with ginacsym
 // version number. In particular, library version is OS dependent. 
@@ -56,7 +56,7 @@
 //  * change matrix inverse to use default argument (twice)
 //  * check for interfaces marked as deprecated
 #define GINACSYM_LT_CURRENT  1
-#define GINACSYM_LT_REVISION 1
+#define GINACSYM_LT_REVISION 2
 #define GINACSYM_LT_AGE      1
 
 /*

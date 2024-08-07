@@ -8,16 +8,35 @@ import re
 import shutil
 import sys
 
+#Linking to static c++ library
+link_args_windows = ['-static-libgcc',  
+             '-static-libstdc++',
+             '-Wl,-Bstatic,--whole-archive',
+             '-lwinpthread',
+             '-Wl,--no-whole-archive']
+link_args_linux = ['-static-libgcc',
+             '-static-libstdc++',
+             '-Wl,-Bstatic,--whole-archive',
+             '-Wl,--no-whole-archive']
+
+#Including README.md file that will be displayed on PyPi pages
+with open("README.md", "r", encoding = "utf-8") as fh:
+ long_description = fh.read()
+
+# Add extensions
+static_lib_dir = "F:\ginacsym_dependencies\opt\lib"
+static_libraries = ["ginacsym","flint","cln","mpfr","gmp"]
+extra_objects = ['{}/lib{}.a'.format(static_lib_dir, l) for l in static_libraries]
 
 class Build(build_ext):
-    # def build_extensions(self):
-    #     if self.compiler.compiler_type == 'mingw32':
-    #         for e in self.extensions:
-    #             e.extra_link_args = link_args_windows
-    #     else:
-    #         for e in self.extensions:
-    #             e.extra_link_args = link_args_linux
-    #     super(Build, self).build_extensions()
+    def build_extensions(self):
+        if self.compiler.compiler_type == 'mingw32':
+            for e in self.extensions:
+                e.extra_link_args = link_args_windows
+        else:
+            for e in self.extensions:
+                e.extra_link_args = link_args_linux
+        super(Build, self).build_extensions()
 
     #Including necessary files with GinacSympy package
 #    def find_package_modules(self, package, package_dir):
@@ -41,10 +60,11 @@ class Build(build_ext):
 
 extensions = [
     Extension("ginacsympy", ["ginacsympy.pyx"],
-        libraries=["ginacsym","flint","cln","mpfr","gmp"],
+        include_dirs=["F:\ginacsym_dependencies\opt\include"],
         #libraries=["ginacsymWithClnFlint","cln","gmp","mpfr","flint"],
         # libraries=["ginacsymstatic"],  
         # library_dirs=["F:\ginacsym_dependencies\opt\lib"],
+        extra_objects=extra_objects
         #extra_compile_args=["-arch", "x86_64"],
         # extra_link_args=["-L."],
         )
@@ -60,6 +80,8 @@ setup(
     author = "Mithun Bairagi",
     author_email = "bairagirasulpur@gmail.com",
     description = "A Cython frontend to the fast C++ symbolic manipulation library GinacSym. ",
+    long_description = long_description,
+    long_description_content_type = "text/markdown",
     license='GPLv2 or above',
     url = "https://htmlpreview.github.io/?https://github.com/mithun218/ginacsympy/blob/master/doc/html/index.html",
     project_urls={
@@ -77,3 +99,8 @@ setup(
     cmdclass={'build_ext': Build}
 )
 
+
+# setup(
+#     ext_modules = cythonize("ginacsympy.pyx"),
+#     cmdclass={'build_ext': Build}
+# )
