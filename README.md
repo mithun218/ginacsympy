@@ -31,7 +31,7 @@ GinacSympy releases are available as wheel packages for Windows and Linux on [Py
 	python -m pip install -U ginacsympy
 	
 ### Building from source
-To install GinacSympy from source code, we require C library  [flint >= 3.0.0](https://flintlib.org), c++ libraries [CLN >= 1.3.4](http://www.ginac.de/CLN/) and [GinacSym](https://github.com/mithun218/ginacsym). After installing prerequisites, we can install GinacSympy executing the command
+To install GinacSympy from source code, we require C library  [flint >= 3.0.0](https://flintlib.org), c++ libraries [CLN >= 1.3.4](http://www.ginac.de/CLN/) and [GinacSym](https://github.com/mithun218/ginacsym). We also need [Cython>=3.0.0](https://cython.org/). After installing prerequisites, we can install GinacSympy executing the command
 
 	python setup.py build_ext install
 
