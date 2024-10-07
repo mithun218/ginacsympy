@@ -2,7 +2,7 @@
 This module exports all latin and greek letters as Symbols, so you can
 conveniently do
 
-    >>> from ginacsympy.abc import x, y
+    >>> from ginacsympy_abc import x, y
 
 instead of the slightly more clunky-looking
 
@@ -14,17 +14,17 @@ Caveats
 
 1. As of the time of writing this, the name ``I``, 
 is colliding with name defined in GinacSympy. If you import this
-from both ``ginacsympy.abc`` and ``ginacsympy``, the second import will "win".
+from both ``ginacsympy_abc`` and ``ginacsympy``, the second import will "win".
 This is an issue only for * imports, which should only be used for short-lived
 code such as interactive sessions and throwaway scripts that do not survive
 until the next GinacSympy upgrade, where ``GinacSympy`` may contain a different set of
 names.
 
 2. This module does not define symbol names on demand, i.e.
-``from ginacsympy.abc import foo`` will be reported as an error because
-``ginacsympy.abc`` does not contain the name ``foo``. To get a symbol named ``foo``,
+``from ginacsympy_abc import foo`` will be reported as an error because
+``ginacsympy_abc`` does not contain the name ``foo``. To get a symbol named ``foo``,
 you still need to use ``Ex('foo')``.
-You can freely mix usage of ``ginacsympy.abc`` and ``Ex``, though
+You can freely mix usage of ``ginacsympy_abc`` and ``Ex``, though
 sticking with one and only one way to get the Ex does tend to make the code
 more readable.
 

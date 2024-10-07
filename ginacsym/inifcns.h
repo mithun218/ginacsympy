@@ -376,6 +376,13 @@ DECLARE_FUNCTION_1P(sn)
 DECLARE_FUNCTION_1P(cn)
 DECLARE_FUNCTION_1P(dn)
 
+/** Helping functions for Diff,Integrate
+ *  to parse them from string
+ *  **/
+DECLARE_FUNCTION_3P(Diff_helper)
+DECLARE_FUNCTION_2P(Integrate_helper)
+
+
 } // namespace ginacsym
 
 #endif // ndef GINAC_INIFCNS_H

@@ -30,6 +30,7 @@
 #include "ncmul.h"
 #include "operators.h"
 #include "indexed.h"
+#include "sstream"
 
 #include "numeric.h"
 #include "power.h"

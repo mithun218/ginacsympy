@@ -29,11 +29,6 @@ GinacSympy releases are available as wheel packages for Windows and Linux on [Py
 
 	python -m pip install -U pip
 	python -m pip install -U ginacsympy
-	
-### Building from source
-To install GinacSympy from source code, we require C library  [flint >= 3.0.0](https://flintlib.org), c++ libraries [CLN >= 1.3.4](http://www.ginac.de/CLN/) and [GinacSym](https://github.com/mithun218/ginacsym). We also need [Cython>=3.0.0](https://cython.org/). After installing prerequisites, we can install GinacSympy executing the command
-
-	python setup.py build_ext install
 
 ## Short usage
 
@@ -49,8 +44,4 @@ To install GinacSympy from source code, we require C library  [flint >= 3.0.0](h
 	
 For in-depth documentation [click here.](https://htmlpreview.github.io/?https://github.com/mithun218/ginacsympy/blob/master/doc/html/index.html)
 
-## Contributions and bug reports
-Contributions to this project are very welcome.
-If you wish to contribute a new feature, you can do this by forking the ginacsympy repo and creating a branch. Apply your code changes to the branch on your fork. When you're done, submit a [pull request](https://github.com/mithun218/ginacsympy/pulls) to merge your fork into master branch with a tag "enhancement", and the proposed changes can be discussed there. 
-If you encounter a bug, please open a new [issue](https://github.com/mithun218/ginacsympy/issues/new) on the GitHub repository to report the bug, and tag it "bug".
-Please provide sufficient information to reproduce the bug and include as much information as possible that can be helpful for fixing it.
+	

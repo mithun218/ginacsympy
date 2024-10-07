@@ -30,7 +30,7 @@
 #define GINACSYMLIB_MINOR_VERSION 0
 
 /* Micro version of ginacsym */
-#define GINACSYMLIB_MICRO_VERSION 2
+#define GINACSYMLIB_MICRO_VERSION 3
 
 // ginacsym library version information. It has very little to do with ginacsym
 // version number. In particular, library version is OS dependent. 

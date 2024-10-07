@@ -25,6 +25,7 @@ with open("README.md", "r", encoding = "utf-8") as fh:
 
 # Add extensions
 static_lib_dir = "F:\ginacsym_dependencies\opt\lib"
+#static_lib_dir = "/home/mithun//opt_ubuntu/lib"
 static_libraries = ["ginacsym","flint","cln","mpfr","gmp"]
 extra_objects = ['{}/lib{}.a'.format(static_lib_dir, l) for l in static_libraries]
 
@@ -61,6 +62,7 @@ class Build(build_ext):
 extensions = [
     Extension("ginacsympy", ["ginacsympy.pyx"],
         include_dirs=["F:\ginacsym_dependencies\opt\include"],
+        #include_dirs=["/home/mithun/opt_ubuntu/include"],
         #libraries=["ginacsymWithClnFlint","cln","gmp","mpfr","flint"],
         # libraries=["ginacsymstatic"],  
         # library_dirs=["F:\ginacsym_dependencies\opt\lib"],
