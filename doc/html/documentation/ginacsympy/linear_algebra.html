@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
     <title>GinacSympy Tutorial</title>
+    <link rel="website icon" type="png" href="../../img/logo.png">
     <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body class="bodydocu">
@@ -178,18 +180,18 @@
         <p>It computes determinant of the matrix.</p>
         <p><code>determinant_algo:</code> The <code>algo</code> argument of this method allows to select between different algorithms for calculating the determinant. The asymptotic speed (as parametrized by the matrix size) can greatly differ between those algorithms, depending on the nature of the matrix’ entries. It has five options.</p>
         <p><code>determinant_algo_automatic-> </code>Let the system choose. A heuristics is applied for automatic determination of a suitable algorithm.</p>
-        <p><code>determinant_algo_gauss-></code> Gauss elimination.  If $m_{i,j}^{(0)}$ are the entries of the
+        <p><code>determinant_algo_gauss-></code> Gauss elimination.  If \(m_{i,j}^{(0)}\) are the entries of the
                 original matrix, then the matrix is transformed into triangular
                 form by applying the rules
-                $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)} / m_{k,k}^{(k)}$
+                \(m_{i,j}^{(k+1)} = m_{i,j}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)} / m_{k,k}^{(k)}\)
                 The determinant is then just the product of diagonal elements.
                 Choose this algorithm only for purely numerical matrices.</p>
         <p><code>determinant_algo_divfree-></code>Division-free elimination. This is a modification of Gauss
                   elimination where the division by the pivot element is not
-                  carried out.  If $m_{i,j}^{(0)}$ are the entries of the
+                  carried out.  If \(m_{i,j}^{(0)}\) are the entries of the
                   original matrix, then the matrix is transformed into triangular
                   form by applying the rules
-                  $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}$
+                  \(m_{i,j}^{(k+1)} = m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}\)
                   The determinant can later be computed by inspecting the diagonal
                   elements only.  This algorithm is only there for the purpose of
                   cross-checks.  It is never fast.</p>
@@ -201,11 +203,11 @@
         <p><code>determinant_algo_bareiss-></code>Bareiss fraction-free elimination. Bareiss fraction-free elimination.  This is a modification of
                   Gauss elimination where the division by the pivot element is
                   <EM>delayed</EM> until it can be carried out without computing
-                  GCDs.  If $m_{i,j}^{(0)}$ are the entries of the original
+                  GCDs.  If \(m_{i,j}^{(0)}\) are the entries of the original
                   matrix, then the matrix is transformed into triangular form by
                   applying the rules
-                      $m_{i,j}^{(k+1)} = (m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}) / m_{k-1,k-1}^{(k-1)}$
-                  (We have set $m_{-1,-1}^{(-1)}=1$ in order to avoid a case
+                      \(m_{i,j}^{(k+1)} = (m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}) / m_{k-1,k-1}^{(k-1)}\)
+                  (We have set \(m_{-1,-1}^{(-1)}=1\) in order to avoid a case
                   distinction in above formula.)  It can be shown that nothing more
                   than polynomial long division is needed for carrying out the
                   division.  The determinant can then be read of from the lower
@@ -250,30 +252,30 @@
         <p>linear systems may be solved by this method. Assuming the matrix object this method is applied on is an m times n matrix, then <code>vars</code> must be a n times p matrix of symbolic indeterminates and <code>rhs</code> a m times p matrix. The returned matrix then has dimension n times p and in the case of an underdetermined system will still contain some of the indeterminates from vars. If the system is overdetermined, an exception is thrown. <code>solve_algo</code> has five options.</p>
         <p><code>solve_algo_automatic</code>->Let the system choose.  A heuristics is applied for automatic
                   determination of a suitable algorithm.</p>
-        <p><code>solve_algo_gauss</code>-> Gauss elimination.  If $m_{i,j}^{(0)}$ are the entries of the
+        <p><code>solve_algo_gauss</code>-> Gauss elimination.  If \(m_{i,j}^{(0)}\) are the entries of the
                   original matrix, then the matrix is transformed into triangular
                   form by applying the rules
-                      $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)} / m_{k,k}^{(k)}$
+                      \(m_{i,j}^{(k+1)} = m_{i,j}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)} / m_{k,k}^{(k)}\)
                   This algorithm is well-suited for numerical matrices but generally
                   suffers from the expensive division (and computation of GCDs) at
                   each step.</p>
         <p><code>solve_algo_divfree</code>-> Division-free elimination.  This is a modification of Gauss
                   elimination where the division by the pivot element is not
-                  carried out.  If $m_{i,j}^{(0)}$ are the entries of the
+                  carried out.  If \(m_{i,j}^{(0)}\) are the entries of the
                   original matrix, then the matrix is transformed into triangular
                   form by applying the rules
-                      $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}$
+                      \(m_{i,j}^{(k+1)} = m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}\)
                   This algorithm is only there for the purpose of cross-checks.
                   It suffers from exponential intermediate expression swell.  Use it
                   only for small systems.</p>
         <p><code>solve_algo_bareiss</code>->Bareiss fraction-free elimination.  This is a modification of
                   Gauss elimination where the division by the pivot element is
                   <EM>delayed</EM> until it can be carried out without computing
-                  GCDs.  If $m_{i,j}^{(0)}$ are the entries of the original
+                  GCDs.  If \(m_{i,j}^{(0)}\) are the entries of the original
                   matrix, then the matrix is transformed into triangular form by
                   applying the rules
-                      $m_{i,j}^{(k+1)} = (m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}) / m_{k-1,k-1}^{(k-1)}$
-                  (We have set $m_{-1,-1}^{(-1)}=1$ in order to avoid a case
+                      \(m_{i,j}^{(k+1)} = (m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}) / m_{k-1,k-1}^{(k-1)}\)
+                  (We have set \(m_{-1,-1}^{(-1)}=1\) in order to avoid a case
                   distinction in above formula.)  It can be shown that nothing more
                   than polynomial long division is needed for carrying out the
                   division.  This is generally the fastest algorithm for solving

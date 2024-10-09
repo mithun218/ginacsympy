@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GinacSympy Tutorial</title>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+    <link rel="website icon" type="png" href="../../img/logo.png">
     <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body class="bodydocu">
@@ -40,30 +42,30 @@
             It returns the <code>lst</code> of solutions as an expression. As an example, let us solve the two equations a*x+b*y=3 and x-y=b:</p>
         <p><code>solve_algo:</code> It has five options.</p>
         <p><code>solve_algo_automatic (default)-></code> Let the system choose.  A heuristics is applied for automatic determination of a suitable algorithm.</p>
-        <p><code>solve_algo_gauss-></code>Gauss elimination.  If $m_{i,j}^{(0)}$ are the entries of the
+        <p><code>solve_algo_gauss-></code>Gauss elimination.  If \(m_{i,j}^{(0)}\) are the entries of the
              original matrix, then the matrix is transformed into triangular
             form by applying the rules
-            $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)} / m_{k,k}^{(k)}$
+            \(m_{i,j}^{(k+1)} = m_{i,j}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)} / m_{k,k}^{(k)}\)
             This algorithm is well-suited for numerical matrices but generally
             suffers from the expensive division (and computation of GCDs) at
             each step. </p>
         <p><code>solve_algo_divfree-></code> Division-free elimination.  This is a modification of Gauss
               elimination where the division by the pivot element is not
-              carried out.  If $m_{i,j}^{(0)}$ are the entries of the
+              carried out.  If \(m_{i,j}^{(0)}\) are the entries of the
               original matrix, then the matrix is transformed into triangular
               form by applying the rules
-                $m_{i,j}^{(k+1)} = m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}$
+                \(m_{i,j}^{(k+1)} = m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}\)
               This algorithm is only there for the purpose of cross-checks.
               It suffers from exponential intermediate expression swell.  Use it
               only for small systems. </p>
         <p><code>solve_algo_bareiss-></code>Bareiss fraction-free elimination.  This is a modification of
               Gauss elimination where the division by the pivot element is
               <EM>delayed</EM> until it can be carried out without computing
-              GCDs.  If \f$m_{i,j}^{(0)}\f$ are the entries of the original
+              GCDs.  If \(m_{i,j}^{(0)}\) are the entries of the original
               matrix, then the matrix is transformed into triangular form by
               applying the rules
-                $m_{i,j}^{(k+1)} = (m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}) / m_{k-1,k-1}^{(k-1)}$
-              (We have set $m_{-1,-1}^{(-1)}=1$ in order to avoid a case
+                \(m_{i,j}^{(k+1)} = (m_{i,j}^{(k)} m_{k,k}^{(k)} - m_{i,k}^{(k)} m_{k,j}^{(k)}) / m_{k-1,k-1}^{(k-1)}\)
+              (We have set \(m_{-1,-1}^{(-1)}=1\) in order to avoid a case
               distinction in above formula.)  It can be shown that nothing more
               than polynomial long division is needed for carrying out the
               division.  This is generally the fastest algorithm for solving
