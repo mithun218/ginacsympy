@@ -3,7 +3,7 @@
  *  Interface to parser context. */
 
 /*
- *  ginacsym Copyright (C) 1999-2023 Johannes Gutenberg University Mainz, Germany
+ *  GiNaC Copyright (C) 1999-2024 Johannes Gutenberg University Mainz, Germany
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef GINAC_PARSE_CONTEXT_H
-#define GINAC_PARSE_CONTEXT_H
+#ifndef GINACSYM_PARSE_CONTEXT_H
+#define GINACSYM_PARSE_CONTEXT_H
 
 #include "ex.h"
 #include "symbol.h"
@@ -63,7 +63,21 @@ typedef std::pair<std::string, std::size_t> prototype;
  * The parser uses (an associative array of) such functions to construct
  * (ginacsym) classes and functions from a sequence of characters.
  */
-typedef ex (*reader_func)(const exvector& args);
+class reader_func {
+	enum { FUNCTION_PTR, GINACSYM_FUNCTION };
+public:
+	reader_func(ex (*func_)(const exvector& args))
+		: type(FUNCTION_PTR), serial(0), func(func_) {}
+	reader_func(unsigned serial_)
+		: type(GINACSYM_FUNCTION), serial(serial_), func(nullptr) {}
+	ex operator()(const exvector& args) const;
+private:
+	unsigned type;
+	unsigned serial;
+	ex (*func)(const exvector& args);
+};
+
+
 
 /**
  * Prototype table.
@@ -118,4 +132,4 @@ extern const prototype_table& get_builtin_reader();
 
 } // namespace ginacsym
 
-#endif // GINAC_PARSE_CONTEXT_H
+#endif // GINACSYM_PARSE_CONTEXT_H
