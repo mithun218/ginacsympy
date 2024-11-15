@@ -1,4 +1,5 @@
-![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2Fmithun218%2Fginacsympy&countColor=%23263759&style=plastic&labelStyle=upper)
+[![Downloads](https://static.pepy.tech/personalized-badge/ginacsympy?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads)](https://pepy.tech/project/ginacsympy)
+![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2Fmithun218%2Fginacsympy&label=Visitors&countColor=%23ff8a65&style=flat&labelStyle=none)
 <p align="center">
 <img src="https://github.com/mithun218/ginacsympy/blob/master/doc/html/img/logo.png?raw=true" width=400>
 </p>
