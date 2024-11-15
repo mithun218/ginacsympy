@@ -1,4 +1,4 @@
-[![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fmithun218%2Fginacsympy&countColor=%23263759)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fmithun218%2Fginacsympy)
+![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2Fmithun218%2Fginacsympy&countColor=%23263759&style=plastic&labelStyle=upper)
 <p align="center">
 <img src="https://github.com/mithun218/ginacsympy/blob/master/doc/html/img/logo.png?raw=true" width=400>
 </p>
