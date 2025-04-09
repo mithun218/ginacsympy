@@ -39,6 +39,11 @@
 
 namespace ginacsym {
 
+//it is true when floating number is converted to fraction
+//to get exact result of arithmetic operations. It also control
+//output on stringstream with or without floating number.
+extern bool floating_to_fraction;
+
 class ex;
 struct ex_is_less;
 class symbol;

@@ -1421,6 +1421,7 @@ cdef extern from "ginacsym/function.h" namespace "ginacsym":
         string get_name() const
 
 cdef extern from "ginacsym/ginacwrapper.h" namespace "ginacsym":
+    void _set_is_floating_to_fraction(const bool& v) except +
     cdef string to_string(const ex& expr) except +
     cdef string to_latex_string(const ex& expr) except +
     cdef string to_python_string(const ex& expr) except +
@@ -1533,6 +1534,10 @@ cdef extern from "ginacsym/solve.h" namespace "ginacsym":
     exsetlst _solve "ginacsym::solve"(const _lst& equs_, const _lst& vars_) except +
 
 ##################### pyx  ##############################################
+
+cdef set_is_floating_to_fraction(bool value):
+    _set_is_floating_to_fraction(value)
+
 
 ############ assumptions ###################################
 
@@ -2128,6 +2133,7 @@ cdef class Ex:
     cdef Ex_iterator itr
     ####### Constructor #######
     def __init__(self,s=None,symbol_assumptions symboltype=complex):
+        set_is_floating_to_fraction(False)
         if type(self) is Ex:
             if s is None:
                 self._this=ex()
@@ -2156,6 +2162,7 @@ cdef class Ex:
                 self._this=ex(<int>s)
             elif isinstance(s,float):
                 self._this=_numeric_to_ex(string_to__numeric(str(s).encode("UTF-8")))
+
 
     ##check the assumption of a symbol###
     def assumption(self):

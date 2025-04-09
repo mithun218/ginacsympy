@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinacSympy Tutorial</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bodydocu">
+        <h1>Clifford algebra</h1>
+
+  
+        <p>Clifford algebras are supported in two flavours: Dirac gamma
+        matrices (more physical) and generic Clifford algebras (more
+        mathematical). 
+        </p>
+        <ul class="lidocu">
+        <li><a href="#Dirac-gamma-matrices" accesskey="1">Dirac gamma matrices</a></li>
+        <li><a href="#A-generic-Clifford-algebra" accesskey="2">A generic Clifford algebra</a></li>
+        </ul>
+
+        <h4 id="Dirac-gamma-matrices">1.1 Dirac gamma matrices</h4>
+        <p>Dirac gamma matrices (note that GinacSympy doesn’t treat them
+        as matrices) are designated as ‘<samp>gamma~mu</samp>’ and satisfy
+        ‘<samp>gamma~mu*gamma~nu + gamma~nu*gamma~mu = 2*eta~mu~nu</samp>’ where
+        ‘<samp>eta~mu~nu</samp>’ is the Minkowski metric tensor. Dirac gammas are
+        constructed by the function
+        </p>
+        <div>
+<pre>
+ Ex dirac_gamma(Ex mu, unsigned char rl = 0)
+</pre>
+        </div>
+
+        <p>which takes two arguments: the index and a <em>representation label</em> in the
+        range 0 to 255 which is used to distinguish elements of different Clifford
+        algebras (this is also called a <em>spin line index</em>). Gammas with different
+        labels commutate with each other. The dimension of the index can be 4 or (in
+        the framework of dimensional regularization) any symbolic value. Spinor
+        indices on Dirac gammas are not supported in GinacSympy.
+        </p>
+        <p>The unity element of a Clifford algebra is constructed by
+        </p>
+        <div>
+<pre>
+ Ex dirac_ONE(unsigned char rl = 0)
+</pre>
+        </div>
+
+        <p><strong>Please notice:</strong> You must always use <code>dirac_ONE()</code> when referring to
+        multiples of the unity element, even though it’s customary to omit it.
+        E.g. instead of <code>dirac_gamma(mu)*(dirac_slash(q,4)+m)</code> you have to
+        write <code>dirac_gamma(mu)*(dirac_slash(q,4)+m*dirac_ONE())</code>. Otherwise,
+        GinacSympy will complain and/or produce incorrect results.
+        </p>
+        <p>There is a special element ‘<samp>gamma5</samp>’ that commutates with all other
+        gammas, has a unit square, and in 4 dimensions equals
+        ‘<samp>gamma~0 gamma~1 gamma~2 gamma~3</samp>’, provided by
+        </p>
+        <div>
+<pre>
+ Ex dirac_gamma5(unsigned char rl = 0)
+</pre>
+        </div>
+
+        <p>The chiral projectors ‘<samp>(1+/-gamma5)/2</samp>’ are also available as proper
+        objects, constructed by</p>
+
+<pre>
+ Ex dirac_gammaL(unsigned char rl = 0)
+ Ex dirac_gammaR(unsigned char rl = 0)
+</pre>
+
+        <p>They observe the relations ‘<samp>gammaL^2 = gammaL</samp>’, ‘<samp>gammaR^2 = gammaR</samp>’,
+        and ‘<samp>gammaL gammaR = gammaR gammaL = 0</samp>’.
+        </p>
+        <p>Finally, the function
+        </p>
+<pre>
+ Ex dirac_slash(Ex e, Ex dim, unsigned char rl = 0)
+</pre>
+
+        <p>creates a term that represents a contraction of ‘<samp>e</samp>’ with the Dirac
+        Lorentz vector (it behaves like a term of the form ‘<samp>e.mu gamma~mu</samp>’
+        with a unique index whose dimension is given by the <code>dim</code> argument).
+        Such slashed expressions are printed with a trailing backslash, e.g. ‘<samp>e\</samp>’.
+        </p>
+        <p>In products of dirac gammas, superfluous unity elements are automatically
+        removed, squares are replaced by their values, and ‘<samp>gamma5</samp>’, ‘<samp>gammaL</samp>’
+        and ‘<samp>gammaR</samp>’ are moved to the front.
+        </p>
+        <p>The <code>simplify_indexed()</code> function performs contractions in gamma strings,
+        for example
+        </p>
+
+<pre class="codebg">
+ &gt;&gt;&gt; a,b,D=Ex("a,b,D")
+ &gt;&gt;&gt; mu=varidx("mu",D)
+ &gt;&gt;&gt; e = dirac_gamma(mu)*dirac_slash(a, D)*dirac_gamma(mu.toggle_variance())
+ &gt;&gt;&gt; e
+ gamma~mu*a\*gamma.mu
+ &gt;&gt;&gt; e = e.simplify_indexed()
+ &gt;&gt;&gt; e 
+ 2*a\-D*a\
+ &gt;&gt;&gt; e.subs({D:4})
+ -2*a\
+</pre>
+
+        <p>To calculate the trace of an expression containing strings of Dirac gammas
+        you use one of the functions
+        </p>
+<pre>
+ Ex dirac_trace(Ex e, rll, Ex trONE = 4)
+</pre>
+
+        <p>These functions take the trace over all gammas in the specified set
+        or list <code>rl</code> of representation labels, or the single label <code>rll</code>;
+        gammas with other labels are left standing. The last argument to
+        <code>dirac_trace()</code> is the value to be returned for the trace of the unity
+        element, which defaults to 4.
+        </p>
+        <p>The <code>dirac_trace()</code> function is a linear functional that is equal to the
+        ordinary matrix trace only in <em>D = 4</em> dimensions. In particular, the
+        functional is not cyclic in
+        <em>D != 4</em>
+        dimensions when acting on
+        expressions containing ‘<samp>gamma5</samp>’, so it’s not a proper trace. This
+        ‘<samp>gamma5</samp>’ scheme is described in greater detail in the article
+        <cite>The Role of gamma5 in Dimensional Regularization</cite> (<a href="https://www.ginac.de/tutorial/#Bibliography">Bibliography</a>).
+        </p>
+        <p>The value of the trace itself is also usually different in 4 and in
+        <em>D != 4</em>
+        dimensions:
+        </p>
+<pre  class="codebg">
+ &gt;&gt;&gt; ##4 dimensions
+ &gt;&gt;&gt; mu,nu,rho = varidx("mu",4),varidx("nu",4),varidx("rho",4)
+ &gt;&gt;&gt; e = dirac_gamma(mu)*dirac_gamma(nu)*dirac_gamma(mu.toggle_variance()) * dirac_gamma(rho)
+ &gt;&gt;&gt; dirac_trace(e,0).simplify_indexed()
+ -8*eta~rho~nu
+ &gt;&gt;&gt; ##D dimensions
+ &gt;&gt;&gt; D = Ex("D")
+ &gt;&gt;&gt; mu,nu,rho = varidx("mu",D),varidx("nu",D),varidx("rho",D)
+ &gt;&gt;&gt; e = dirac_gamma(mu)*dirac_gamma(nu)*dirac_gamma(mu.toggle_variance()) * dirac_gamma(rho)
+ &gt;&gt;&gt;  dirac_trace(e,0).simplify_indexed()
+ 8*eta~rho~nu-4*eta~rho~nu*D
+</pre>
+
+        <p>Here is an example for using <code>dirac_trace()</code> to compute a value that
+        appears in the calculation of the one-loop vacuum polarization amplitude in
+        QED:
+        </p>
+<pre  class="codebg">
+ &gt;&gt;&gt; q,l,m,ldotq,D = Ex("q,l,m,ldotq,D") 
+ &gt;&gt;&gt; mu,nu = varidx("mu",D),varidx("nu",D)
+ &gt;&gt;&gt; sp = scalar_products()
+ &gt;&gt;&gt; sp.add(l, l, pow(l, 2))
+ &gt;&gt;&gt; sp.add(l, q, ldotq)
+ &gt;&gt;&gt;  e = dirac_gamma(mu)*(dirac_slash(l, D) + dirac_slash(q, D) + m*dirac_ONE())*dirac_gamma(mu.toggle_variance())*(dirac_slash(l, D) + m*dirac_ONE())   
+ &gt;&gt;&gt; e = dirac_trace(e,0).simplify_indexed(sp)
+ &gt;&gt;&gt; e = e.collect(lst([l, ldotq, m]))
+ &gt;&gt;&gt; e
+ -4*(-2+D)*ldotq+4*m**2*D-4*l**2*(-2+D)
+</pre>
+
+        <p>The <code>canonicalize_clifford()</code> function reorders all gamma products that
+        appear in an expression to a canonical (but not necessarily simple) form.
+        You can use this to compare two expressions or for further simplifications:
+        </p>
+<pre  class="codebg">
+ &gt;&gt;&gt; mu,nu = varidx("mu",4),varidx("nu",4)
+ &gt;&gt;&gt; e = dirac_gamma(mu)*dirac_gamma(nu) + dirac_gamma(nu)*dirac_gamma(mu)
+ &gt;&gt;&gt; e
+ gamma~mu*gamma~nu+gamma~nu*gamma~mu
+ &gt;&gt;&gt; e = canonicalize_clifford(e);
+ &gt;&gt;&gt; e
+ 2*ONE*eta~mu~nu
+</pre>     
+
+        <h4  id="A-generic-Clifford-algebra">1.2 A generic Clifford algebra</h4>
+        <p>A generic Clifford algebra, i.e. a 2^n
+        dimensional algebra with generators e_k satisfying the identities 
+        e~i e~j + e~j e~i = M(i, j) + M(j, i) 
+        for some bilinear form (<code>metric</code>)
+        <em>M(i, j)</em>, which may be non-symmetric (see arXiv:math.QA/9911180) 
+        and contain symbolic entries. Such generators are created by the
+        function 
+        </p>
+<pre>
+ Ex clifford_unit(Ex mu, Ex metr, unsigned char rl = 0)    
+</pre>
+
+        <p>where <code>mu</code> should be a <code>idx</code> (or descendant) class object
+        indexing the generators.
+        Parameter <code>metr</code> defines the metric <em>M(i, j)</em> and can be
+        represented by a square <code>matrix</code>, <code>tensormetric</code> or <code>indexed</code> class
+        object. In fact, any expression either with two free indices or without
+        indices at all is admitted as <code>metr</code>. In the later case an <code>indexed</code>
+        object with two newly created indices with <code>metr</code> as its
+        <code>op(0)</code> will be used.
+        Optional parameter <code>rl</code> allows to distinguish different
+        Clifford algebras, which will commute with each other. 
+        </p>
+        <p>Note that the call <code>clifford_unit(mu, minkmetric())</code> creates
+        something very close to <code>dirac_gamma(mu)</code>, although
+        <code>dirac_gamma</code> have more efficient simplification mechanism. 
+        Also, the object created by <code>clifford_unit(mu, minkmetric())</code> is
+        not aware about the symmetry of its metric, see the start of the previous
+        paragraph. A more accurate analog of ’dirac_gamma(mu)’ should be
+        specifies as follows:
+        </p>
+<pre>
+ Ex clifford_unit(mu, indexed(minkmetric(),[varidx("i",4),varidx("j",4)],sy_symm()))
+</pre>
+
+        <p>The method <code>clifford.get_metric()</code> returns a metric defining this
+        Clifford number.
+        </p>
+        <p>If the matrix <em>M(i, j)</em> is in fact symmetric you may prefer to create
+        the Clifford algebra units with a call like that
+        </p>
+<pre>
+ Ex e = clifford_unit(mu, indexed(M, sy_symm(), i, j));
+</pre>
+
+        <p>since this may yield some further automatic simplifications. Again, for a
+        metric defined through a <code>matrix</code> such a symmetry is detected
+        automatically. 
+        </p>
+        <p>Individual generators of a Clifford algebra can be accessed in several
+        ways. For example 
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt; i = idx("i",4)
+ &gt;&gt;&gt; s = Ex("s",real)
+ &gt;&gt;&gt; Ex M = diag_matrix(([1, -1, 0, s]))
+ &gt;&gt;&gt; e = clifford_unit(i, M)
+ &gt;&gt;&gt; e0 = e.subs({i:0})
+ &gt;&gt;&gt; e1 = e.subs({i:1})
+ &gt;&gt;&gt; e2 = e.subs({i:2})
+ &gt;&gt;&gt; e3 = e.subs({i:3})
+</pre>
+
+        <p>will produce four anti-commuting generators of a Clifford algebra with properties
+        <code>pow(e0, 2) = 1</code>, <code>pow(e1, 2) = -1</code>, <code>pow(e2, 2) = 0</code> and
+        <code>pow(e3, 2) = s</code>.
+        </p>
+        <p>A similar effect can be achieved from the function
+        </p>
+<pre>
+ Ex lst_to_clifford(Ex v, Ex mu,  Ex metr, unsigned char rl = 0)
+ Ex lst_to_clifford(Ex v, Ex e)
+</pre>
+
+        <p>which converts a list or vector 
+        ‘<samp>v = (v~0, v~1, ..., v~n)</samp>’ 
+        into the
+        Clifford number 
+        ‘<samp>v~0 e.0 + v~1 e.1 + ... + v~n e.n</samp>’
+        with ‘<samp>e.k</samp>’
+        directly supplied in the second form of the procedure. In the first form
+        the Clifford unit ‘<samp>e.k</samp>’ is generated by the call of
+        <code>clifford_unit(mu, metr, rl)</code>. 
+        If the number of components supplied
+        by <code>v</code> exceeds the dimensionality of the Clifford unit <code>e</code> by
+        1 then function <code>lst_to_clifford()</code> uses the following
+        pseudo-vector representation: 
+        ‘<samp>v~0 ONE + v~1 e.0 + v~2 e.1 + ... + v~[n+1] e.n</samp>’
+        </p>
+        <p>The previous code may be rewritten with the help of <code>lst_to_clifford()</code> as follows
+        </p>
+<pre class="codebg">
+ &gt;&gt;&gt; i = idx("i",4)
+ &gt;&gt;&gt; s = Ex("s",real)
+ &gt;&gt;&gt; M = diag_matrix([1, -1, 0, s])
+ &gt;&gt;&gt; e0 = lst_to_clifford(lst([1, 0, 0, 0]), i, M)
+ &gt;&gt;&gt; e1 = lst_to_clifford(lst([0, 1, 0, 0]), i, M)
+ &gt;&gt;&gt; e2 = lst_to_clifford(lst([0, 0, 1, 0]), i, M)
+ &gt;&gt;&gt; e3 = lst_to_clifford(lst([0, 0, 0, 1]), i, M)
+</pre>
+        <p>There is the inverse function 
+        </p>
+<pre>
+ lst clifford_to_lst(Ex e, Ex c, bool algebraic = true)
+</pre>
+
+        <p>which takes an expression <code>e</code> and tries to find a list
+        ‘<samp>v = (v~0, v~1, ..., v~n)</samp>’ 
+        such that the expression is either vector 
+        ‘<samp>e = v~0 c.0 + v~1 c.1 + ... + v~n c.n</samp>’
+        or pseudo-vector 
+        ‘<samp>v~0 ONE + v~1 e.0 + v~2 e.1 + ... + v~[n+1] e.n</samp>’
+        with respect to the given Clifford units <code>c</code>. Here none of the
+        ‘<samp>v~k</samp>’ should contain Clifford units <code>c</code> (of course, this
+        may be impossible). This function can use an <code>algebraic</code> method
+        (default) or a symbolic one. With the <code>algebraic</code> method the
+        ‘<samp>v~k</samp>’ are calculated as 
+        ‘<samp>(e c.k + c.k e)/pow(c.k, 2)</samp>’.   If ‘<samp>pow(c.k, 2)</samp>’ 
+        is zero or is not <code>numeric</code> for some ‘<samp>k</samp>’
+        then the method will be automatically changed to symbolic. The same effect
+        is obtained by the assignment (<code>algebraic = false</code>) in the procedure call.
+        </p>
+        <p>There are several functions for (anti-)automorphisms of Clifford algebras:
+        </p>
+<pre>
+ Ex clifford_prime(Ex e)
+ Ex clifford_star(Ex e)
+ Ex clifford_bar(Ex e)
+</pre>
+
+        <p>The automorphism of a Clifford algebra <code>clifford_prime()</code> simply
+        changes signs of all Clifford units in the expression. The reversion
+        of a Clifford algebra <code>clifford_star()</code> reverses the order of Clifford
+        units in any product. Finally the main anti-automorphism
+        of a Clifford algebra <code>clifford_bar()</code> is the composition of the
+        previous two, i.e. it makes the reversion and changes signs of all Clifford units
+        in a product. These functions correspond to the notations
+        <em>e'</em>,
+        e*
+        and
+        <code>\bar{e}</code>
+        used in Clifford algebra textbooks.
+        </p>
+        <p>The function
+        </p>
+<pre>
+ Ex clifford_norm(Ex e)
+</pre>
+        <p>calculates the norm of a Clifford number from the expression
+        <code>||e||^2 = e \bar{e}</code>
+                The inverse of a Clifford expression is returned by the function
+        </p>
+<pre>
+ Ex clifford_inverse(Ex e)
+</pre>
+        <p>which calculates it as 
+        <em>e^{-1} = \bar{e}/||e||^2</em>
+                If
+        <em>||e||=0</em>
+        then an exception is raised.
+        </p>
+        <p>If a Clifford number happens to be a factor of
+        <code>dirac_ONE()</code> then we can convert it to a “real” (non-Clifford)
+        expression by the function
+        </p>
+<pre>
+ Ex remove_dirac_ONE(Ex e)
+</pre>
+
+        <p>The function <code>canonicalize_clifford()</code> works for a
+        generic Clifford algebra in a similar way as for Dirac gammas.
+        </p>
+        <p>The next provided function is
+        </p>
+<pre>
+ Ex clifford_moebius_map(Ex a, Ex b, Ex c, Ex d, Ex v, Ex G, unsigned rl = 0)
+ Ex clifford_moebius_map(Ex M, Ex v, Ex G, unsigned rl = 0)
+</pre>
+
+        <p>It takes a list or vector <code>v</code> and makes the Moebius (conformal or
+        linear-fractional) transformation ‘<samp>v -&gt; (av+b)/(cv+d)</samp>’ defined by
+        the matrix ‘<samp>M = [[a, b], [c, d]]</samp>’. The parameter <code>G</code> defines
+        the metric of the surrounding (pseudo-)Euclidean space. This can be an
+        indexed object, tensormetric, matrix or a Clifford unit, in the later
+        case the optional parameter <code>rl</code> is ignored even if supplied.
+        Depending from the type of <code>v</code> the returned value of this function
+        is either a vector or a list holding vector’s components.
+        </p>
+        <p>Finally the function
+        </p>
+<pre>
+ int clifford_max_label(Ex e, bool ignore_ONE = false);
+</pre>
+        <p>can detect a presence of Clifford objects in the expression <code>e</code>: if
+        such objects are found it returns the maximal
+        <code>representation_label</code> of them, otherwise <code>-1</code>. The optional
+        parameter <code>ignore_ONE</code> indicates if <code>dirac_ONE</code> objects should
+        be ignored during the search.
+        </p> 
+        <p>LaTeX output for Clifford units looks like
+        <code>\clifford[1]{e}^{{\nu}}</code>, where <code>1</code> is the
+        <code>representation_label</code> and <code>\nu</code> is the index of the
+        corresponding unit. This provides a flexible typesetting with a suitable
+        definition of the <code>\clifford</code> command. For example, the definition
+        </p>
+<pre>
+ \newcommand{\clifford}[1][]{}
+</pre>
+        <p>typesets all Clifford units identically, while the alternative definition
+        </p>
+<pre>
+ \newcommand{\clifford}[2][]{\ifcase #1 #2\or \tilde{#2} \or \breve{#2} \fi}
+</pre>
+        <p>prints units with <code>representation_label=0</code> as 
+        <code>e</code>,
+        with <code>representation_label=1</code> as 
+        <code>\tilde{e}</code> and with <code>representation_label=2</code> as 
+        <code>\breve{e}</code>.
+        </p>
+
+        
+       
+    
+<br>
+<br>
+<hr>
+<br>
+<div class="pagefooter">
+    <p>
+        Copyright &copy; Mithun Bairagi 2024-present
+        <br>
+        Contact: Mithun Bairagi, <a href="mailto:bairagirasulpur@gmail.com">bairagirasulpur@gmail.com</a>, Bankura, West Bengal, India
+        <br>
+        <br>
+    </p>
+</div>
+<script type="text/javascript" src="../js/version.js"></script>
+</body>
+</html>

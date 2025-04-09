@@ -4,6 +4,8 @@
 #include "ex.h"
 namespace ginacsym {
 
+extern std::stringstream str;
+
 /***  """Computes the limit of ``e(z)`` at the point ``z0``.
 
 //    Parameters

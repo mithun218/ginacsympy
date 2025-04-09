@@ -79,6 +79,7 @@
 #include  "solve.h"
 #include  "utility.h"
 #include "limit.h"
+#include "pass.h"
 
 //#ifndef IN_GINACSYM
 #include "parser.h"

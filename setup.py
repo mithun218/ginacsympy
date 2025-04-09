@@ -13,10 +13,10 @@ class Build(build_ext):
     # def build_extensions(self):
     #     if self.compiler.compiler_type == 'mingw32':
     #         for e in self.extensions:
-    #             e.extra_link_args = link_args_windows
+    #             e.extra_link_args = gcc_lflags
     #     else:
     #         for e in self.extensions:
-    #             e.extra_link_args = link_args_linux
+    #             e.extra_link_args = gcc_lflags
     #     super(Build, self).build_extensions()
 
     #Including necessary files with GinacSympy package
@@ -44,8 +44,8 @@ extensions = [
         libraries=["ginacsym","flint","cln","mpfr","gmp"],
         #libraries=["ginacsymWithClnFlint","cln","gmp","mpfr","flint"],
         # libraries=["ginacsymstatic"],  
-        # library_dirs=["F:\ginacsym_dependencies\opt\lib"],
-        #extra_compile_args=["-arch", "x86_64"],
+        # library_dirs=["F:\msys64\mingw64\lib"],
+        # extra_compile_args=['-ldl'],
         # extra_link_args=["-L."],
         )
 ]
