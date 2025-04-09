@@ -42,6 +42,6 @@ GinacSympy releases are available as wheel packages for Windows and Linux on [Py
 	>>>(x**2*y+y*x+y*x*b+a*x+b*x**2*y).collect(lst([x,y]),True)
 	x**2*(1+b)*y+x*(1+b)*y+a*x
 	
-For in-depth documentation [click here.](https://htmlpreview.github.io/?https://github.com/mithun218/ginacsympy/blob/master/doc/html/index.html)
+For in-depth documentation [click here.](https://mithun218.github.io/ginacsympy/)
 
 	
