@@ -85,7 +85,7 @@ setup(
     long_description = long_description,
     long_description_content_type = "text/markdown",
     license='GPLv2 or above',
-    url = "https://htmlpreview.github.io/?https://github.com/mithun218/ginacsympy/blob/master/doc/html/index.html",
+    url = "https://mithun218.github.io/ginacsympy/",
     project_urls={
               'Source': 'https://github.com/mithun218/ginacsympy',
           },

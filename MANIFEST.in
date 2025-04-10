@@ -1,6 +1,6 @@
 include README.md
 include setupwheel.py
-recursive-include doc *
+recursive-include docs *
 include ginacsympy_version.py
 include ginacsympy_abc.py
 include ginacsympy.pyx

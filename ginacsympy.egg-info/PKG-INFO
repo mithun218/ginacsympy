@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: ginacsympy
-Version: 1.0.3
+Version: 1.0.4
 Summary: A Cython frontend to the fast C++ symbolic manipulation library GinacSym. 
-Home-page: https://htmlpreview.github.io/?https://github.com/mithun218/ginacsympy/blob/master/doc/html/index.html
+Home-page: https://mithun218.github.io/ginacsympy/
 Author: Mithun Bairagi
 Author-email: bairagirasulpur@gmail.com
 License: GPLv2 or above

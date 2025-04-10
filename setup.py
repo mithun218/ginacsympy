@@ -61,7 +61,7 @@ setup(
     author_email = "bairagirasulpur@gmail.com",
     description = "A Cython frontend to the fast C++ symbolic manipulation library GinacSym. ",
     license='GPLv2 or above',
-    url = "https://htmlpreview.github.io/?https://github.com/mithun218/ginacsympy/blob/master/doc/html/index.html",
+    url = "https://mithun218.github.io/ginacsympy/",
     project_urls={
               'Source': 'https://github.com/mithun218/ginacsympy',
           },
