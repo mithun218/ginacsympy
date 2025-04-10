@@ -149,6 +149,7 @@ inline std::string to_python_string(const ex& expr)
     return tem;
 }
 
+
 void _set_is_floating_to_fraction(const bool& value);
 
 inline ex _numeric_to_ex(const numeric& n){

@@ -27,10 +27,12 @@
 #define unlikely(cond) __builtin_expect((cond), 0)
 #define likely(cond) __builtin_expect((cond), 1)
 #define attribute_deprecated __attribute__ ((deprecated))
+#define attribute_pure __attribute__((__pure__))
 #else
 #define unlikely(cond) (cond)
 #define likely(cond) (cond)
 #define attribute_deprecated
+#define attribute_pure
 #endif
 
 #endif // ndef GINAC_COMPILER_DEP_H

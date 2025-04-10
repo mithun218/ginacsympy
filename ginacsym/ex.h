@@ -25,6 +25,7 @@
 
 #include "basic.h"
 #include "ptr.h"
+#include "compiler.h"
 
 #include <functional>
 #include <iosfwd>
@@ -975,7 +976,7 @@ inline bool is_exactly_a(const ex &obj)
  *  @param e expression
  *  @return reference to object of class T
  *  @see is_exactly_a<class T>() */
-template <class T>
+template <class T> attribute_pure
 inline const T &ex_to(const ex &e)
 {
 	GINAC_ASSERT(is_a<T>(e));
