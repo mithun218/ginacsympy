@@ -15,6 +15,12 @@ from cpython.ref cimport PyObject
 
 #from IPython.display import display, Math
 
+cdef extern from "<sstream>" namespace "std":
+    cdef cppclass stringstream:
+        stringstream()
+        string str()
+        # You can add other methods like '<<' operators if neede
+
 #ginacsympy version number
 import ginacsympy_version
 __version__ = ginacsympy_version.__version__
@@ -531,6 +537,9 @@ cdef extern from "ginacsym/normal.h" namespace "ginacsym":
 
 #    /** Compute square-free partial fraction decomposition of rational function **/
     ex _apart "ginacsym::apart"(const ex & a, const _symbol & x)  except +
+
+#   // Compute apart with steps
+    ex _apart_with_steps "ginacsym::apart_with_steps"(const ex &a, const ex &x, _stepContext *ctx) except +
 
 ##    // Collect common factors in sums.
 #    ex _collect_common_factors "ginacsym::collect_common_factors"(const ex & e) except +
@@ -1468,6 +1477,10 @@ cdef extern from "ginacsym/utility.h" namespace "ginacsym":
     cdef ex Gcd(_lst exp) except +
     cdef ex Lcm(_lst exp) except +
 
+    cdef cppclass _stepContext "ginacsym::stepContext":
+        bool show_steps
+        stringstream steps
+
 cdef extern from "ginacsym/infinity.h" namespace "ginacsym":
     cdef cppclass _infinity "ginacsym::infinity"(basic):
         ex eval()
@@ -1511,7 +1524,7 @@ cdef extern from "ginacsym/integrate.h" namespace "ginacsym":
     ex _integrate "ginacsym::integrate"(const ex& expr_, const ex& var_,const ex& l_, const ex& u_, const int& partial_num) except +
 
 cdef extern from "ginacsym/limit.h" namespace "ginacsym":
-    ex _limit "ginacsym::limit"(const ex& e, const ex& z, const ex& z0, const string& dir) except +
+    ex _limit "ginacsym::limit"(const ex& e, const ex& z, const ex& z0, const string& dir, _stepContext* sc) except +
 
 cdef extern from "ginacsym/simplify.h" namespace "ginacsym":
     cdef enum _simplify_options:
@@ -1532,6 +1545,13 @@ cdef extern from "ginacsym/simplify.h" namespace "ginacsym":
 
 cdef extern from "ginacsym/solve.h" namespace "ginacsym":
     exsetlst _solve "ginacsym::solve"(const _lst& equs_, const _lst& vars_) except +
+
+cdef extern from "ginacsym/integral_transform.h" namespace "ginacsym":
+    #Calculate Laplace Transform
+    ex _laplace_transform "ginacsym::laplace_transform"(const ex &f, const ex &t, const ex &s, _stepContext *ctx) except +
+
+    #Calculate Inverse Laplace Transform
+    ex _inverse_laplace_transform "ginacsym::inverse_laplace_transform"(const ex &F, const ex &s, const ex &t, _stepContext *ctx) except +
 
 ##################### pyx  ##############################################
 
@@ -2749,14 +2769,27 @@ cdef class Ex:
     def __ge__(self,other):
         return self._this>=py_to_ex(other)
 
-    def __getitem__(self, int index): ##[] operator for slicing lst object
-        if index >= (self._this).nops() or index<0:
-            raise Exception("index is out of range or negative.")
-        return ex_to_Ex((self._this)[<size_t>index])
-    def __setitem__(self, int index,other): ##[] operator for setting lst object
-        if index >= (self._this).nops() or index<0:
-            raise Exception("index is out of range or negative.")
-        (self._this)[<size_t>index]=py_to_ex(other)
+    def __getitem__(self, Py_ssize_t index): ##[] operator for slicing lst object
+        cdef Py_ssize_t size = <Py_ssize_t>self._this.nops()
+        if index < 0 or index >= size:
+            raise IndexError("index is out of range or negative.")
+        return ex_to_Ex(self._this[<size_t>index])
+
+    def __setitem__(self, Py_ssize_t index, other): ##[] operator for setting lst object
+        cdef Py_ssize_t size = <Py_ssize_t>self._this.nops()
+        if index < 0 or index >= size:
+            raise IndexError("index is out of range or negative.")
+        self._this[<size_t>index] = py_to_ex(other)
+
+
+    # def __getitem__(self, Py_ssize_t index): ##[] operator for slicing lst object
+    #     if index >= (self._this).nops() or index<0:
+    #         raise Exception("index is out of range or negative.")
+    #     return ex_to_Ex((self._this)[<size_t>index])
+    # def __setitem__(self, Py_ssize_t index,other): ##[] operator for setting lst object
+    #     if index >= (self._this).nops() or index<0:
+    #         raise Exception("index is out of range or negative.")
+    #     (self._this)[<size_t>index]=py_to_ex(other)
 
     #####some new member functions#####################
     def evaluate(self):
@@ -2770,8 +2803,11 @@ cdef class Ex:
         else:
             return ex_to_Ex(_integrate(self._this,var_._this,py_to_ex(l_),py_to_ex(u_),partial_num))
 
-    def limit(self,Ex z, z0, str dir="+-"):
-        return ex_to_Ex(_limit(self._this,z._this, py_to_ex(z0), dir.encode("UTF-8")))
+    def limit(self,Ex z, z0, str dir="+-", stepContext sc=None):
+        if sc is not None:
+            return ex_to_Ex(_limit(self._this,z._this, py_to_ex(z0), dir.encode("UTF-8"), sc._thisStepContext))
+        else:
+            return ex_to_Ex(_limit(self._this,z._this, py_to_ex(z0), dir.encode("UTF-8"), NULL))
 
     def factor(self, factor_options opt=factor_options_polynomial):
         return ex_to_Ex(_factor(self._this,opt))
@@ -2816,6 +2852,9 @@ cdef class Ex:
 #    // wrapper functions around member functions
 cpdef size_t nops(Ex expr):
     return expr._this.nops()
+
+cpdef series(Ex e,Ex r, int order, series_options opt=series_nooptions):
+    return ex_to_Ex(e._this.series(r._this,order,opt))
 
 cpdef lst expand(Ex expr, expand_options opt=expand_nooptions):
     return to_lst(expandflint(expr._this,opt))
@@ -2943,6 +2982,12 @@ cpdef Ex sqrfree_parfrac(Ex a, Ex x):
 
 cpdef Ex apart(Ex a, Ex x):
     return ex_to_Ex(_apart(a._this, ex_to[_symbol](x._this)))
+
+cpdef Ex apart_with_steps(Ex a, Ex x, stepContext sc = None):
+    if sc is not None:
+        return ex_to_Ex(_apart_with_steps(a._this, x._this, sc._thisStepContext))
+    else:
+        return ex_to_Ex(_apart_with_steps(a._this, x._this, NULL))
 
 cpdef Ex resultant(Ex  e1, Ex  e2, Ex  s):
     return ex_to_Ex(_resultant(e1._this, e2._this, s._this))
@@ -3974,6 +4019,20 @@ cdef Ex create_infinity():
     return ex_to_Ex(_Infinity.eval())
 Infinity=create_infinity()
 
+cdef class stepContext:
+    cdef _stepContext* _thisStepContext
+    def __cinit__(self, bool show_steps=False):
+        self._thisStepContext = new _stepContext()
+        self._thisStepContext.show_steps = show_steps
+    def show_steps(self):
+        return self._thisStepContext.show_steps
+    def steps(self):
+        return self._thisStepContext.steps.str().decode("UTF-8")
+    def __dealloc__(self):
+        # Free the C++ object's memory when the Python object is garbage-collected
+        if self._thisStepContext is not NULL:
+            del self._thisStepContext
+
 ####################################################################################################
                                 ###### functions object ###############
 ####################################################################################################
@@ -4060,8 +4119,24 @@ cpdef Ex integrate(Ex expr_, Ex var_, partial_num_l_= None, u_=None, int partial
     else:
         return ex_to_Ex(_integrate(expr_._this,var_._this,py_to_ex(partial_num_l_),py_to_ex(u_),partial_num))
 
-cpdef Ex limit(e,Ex z, z0, str dir="+-"):
-    return ex_to_Ex(_limit(py_to_ex(e),(z)._this, py_to_ex(z0), dir.encode("UTF-8")))
+
+cpdef Ex limit(Ex e,Ex z, z0, str dir="+-", stepContext sc=None):
+    if sc is not None:
+        return ex_to_Ex(_limit(e._this,z._this, py_to_ex(z0), dir.encode("UTF-8"), sc._thisStepContext))
+    else:
+        return ex_to_Ex(_limit(e._this,z._this, py_to_ex(z0), dir.encode("UTF-8"), NULL))
+
+cpdef Ex laplace_transform(Ex e,Ex t, Ex s, stepContext sc=None):
+    if sc is not None:
+        return ex_to_Ex(_laplace_transform(e._this, t._this, s._this, sc._thisStepContext))
+    else:
+        return ex_to_Ex(_laplace_transform(e._this, t._this, s._this, NULL))
+
+cpdef Ex inverse_laplace_transform(Ex e,Ex s, Ex t, stepContext sc=None):
+    if sc is not None:
+        return ex_to_Ex(_inverse_laplace_transform(e._this, s._this, t._this, sc._thisStepContext))
+    else:
+        return ex_to_Ex(_inverse_laplace_transform(e._this, s._this, t._this, NULL))
 
 cpdef Ex collect_common_factor(Ex e):
     return ex_to_Ex(Collect_common_factor(e._this))

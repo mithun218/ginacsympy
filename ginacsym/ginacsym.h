@@ -80,6 +80,7 @@
 #include  "utility.h"
 #include "limit.h"
 #include "pass.h"
+#include "integral_transform.h"
 
 //#ifndef IN_GINACSYM
 #include "parser.h"

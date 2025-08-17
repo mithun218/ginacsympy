@@ -2,6 +2,7 @@
 #define LIMIT_H
 
 #include "ex.h"
+#include "utility.h"
 namespace ginacsym {
 
 extern std::stringstream str;
@@ -28,7 +29,7 @@ extern std::stringstream str;
 //        (i.e., ``dir="-"`` for ``oo``).
 ***/
 
-ex limit(const ex& e, const ex& z, const ex& z0, const std::string& dir="+-");
+ex limit(const ex& e, const ex& z, const ex& z0, const std::string& dir="+-", ginacsym::stepContext* sc = nullptr);
 
 }
 

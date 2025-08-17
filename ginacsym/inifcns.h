@@ -47,6 +47,9 @@ DECLARE_FUNCTION_1P(step)
 /** Heaviside function. */
 DECLARE_FUNCTION_1P(heaviside)
 
+/** Dirac delta function. */
+DECLARE_FUNCTION_1P(dirac_delta)
+
 /** Formal piecewise function */
 DECLARE_FUNCTION_1P(cases)
 	
@@ -381,6 +384,10 @@ DECLARE_FUNCTION_1P(dn)
  *  **/
 DECLARE_FUNCTION_3P(Diff_helper)
 DECLARE_FUNCTION_2P(Integrate_helper)
+
+/** inert laplace **/
+DECLARE_FUNCTION_3P(Laplace)
+DECLARE_FUNCTION_3P(InverseLaplace)
 
 
 } // namespace ginacsym

@@ -45,10 +45,15 @@ extensions = [
         #libraries=["ginacsymWithClnFlint","cln","gmp","mpfr","flint"],
         # libraries=["ginacsymstatic"],  
         # library_dirs=["F:\msys64\mingw64\lib"],
-        # extra_compile_args=['-ldl'],
+        extra_compile_args=["-std=c++11"],
         # extra_link_args=["-L."],
         )
 ]
+
+
+for e in extensions:
+    e.cython_directives = {'language_level': "3str"} #all are Python-3
+
 
 def get_property(prop, project):
     result = re.search(r'{}\s*=\s*[\'"]([^\'"]*)[\'"]'.format(prop), open(project + 'ginacsympy_version.py').read())
@@ -71,7 +76,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
         ],
-    setup_requires = "wheel",
+    # setup_requires = "wheel",
     python_requires='>=3.8',
     ext_modules=cythonize(extensions),
     cmdclass={'build_ext': Build}

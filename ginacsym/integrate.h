@@ -43,6 +43,8 @@ namespace ginacsym {
         ex find_const(const ex& expr_) const;
         ex do_inte(const ex& expr_) const;
         ex substituttion(const exmap& newvari);
+        ex special_integral(const ex &expr);
+        ex special_integral1(const ex &expr);
     public:
         int partial_num;//if partial_num<0, partial integration is performed until it is terminated.
         integratec(const ex& var_, const int partial_num=-1):var(var_),partial_num(partial_num){}

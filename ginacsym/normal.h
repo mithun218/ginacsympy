@@ -27,6 +27,7 @@
 #define GINAC_NORMAL_H
 
 #include "lst.h"
+#include "utility.h"
 
 namespace ginacsym {
 
@@ -99,6 +100,9 @@ extern ex sqrfree_parfrac(const ex & a, const symbol & x);
 
 /** Compute square-free partial fraction decomposition of rational function **/
 extern ex apart(const ex & a, const symbol & x);
+
+/** Performs symbolic partial fraction decomposition with step logging. **/
+extern ex apart_with_steps(const ex &a, const ex &x, stepContext *ctx = nullptr);
 
 // Collect common factors in sums.
 extern ex collect_common_factors(const ex & e);

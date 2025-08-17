@@ -21,12 +21,11 @@ class functions:public basic {
 
     ex functionname;
     bool islatexname;
-    std::string fns;
     lst functiondependency = {};
     unsigned assumption;
 public:
-
-  functions(const std::string &fns, const lst &fd, unsigned assu);
+    std::string fns;
+    functions(const std::string &fns, const lst &fd, unsigned assu);
  protected:
    void do_print(const print_context & c, unsigned level) const{
        functionname.print(c);

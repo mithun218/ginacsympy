@@ -71,6 +71,11 @@ namespace ginacsym{
     std::vector<std::string> split (const std::string &s, char delim);
 
 
+    // Define the stepContext to carry external control and explanation log
+    struct stepContext {
+        bool show_steps = false;
+        std::stringstream steps;
+    };
 
     /** Symbol finder **/
     class symbol_finderc:public map_function
